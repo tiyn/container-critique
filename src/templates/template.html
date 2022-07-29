@@ -1,0 +1,32 @@
+<html>
+<head>
+    <title>{{ title }}</title>
+    <link href="{{ url_for('static', filename='css/' + style + '.css') }}" rel="stylesheet" type="text/css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width" initial-scale=1.0>
+</head>
+<body>
+    <!-- Menu -->
+    <div class="main-menu-dropdown">
+        <!-- <img class="logo" src="/static/images/logo.png"> -->
+        <span>{{ title }}</span>
+        <input type="checkbox" id="main-menu-check">
+        <label for="main-menu-check" class="show-menu">&#9776;</label>
+        <div class="main-menu">
+            <a href="/">Blog</a>
+            <a href="/archive">Archive</a>
+            <label for="main-menu-check" class="hide-menu">X</label>
+        </div>
+    </div>
+    <!-- Menu -->
+    <!-- Content -->
+	{% block content %}
+	{% endblock %}
+    <!-- Content -->
+    <footer>
+        <div class="center">
+            Made with <a href="https://github.com/tiyn/container-critique">Container Critique </a>.
+        </div>
+    </footer>
+</body>
+</html>

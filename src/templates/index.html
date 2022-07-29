@@ -1,0 +1,11 @@
+{% extends "template.html" %}
+{% block content %}
+<div class="container">
+    <div class="blog">
+        <h1>Index</h1><br>
+        {% autoescape off %}
+        {{ content_string }}
+        {% endautoescape %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,169 @@
+:root {
+    --error: rgb(255,0,0);
+    --transtime: 0.7s;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+a {
+    text-decoration: none;
+    transition: var(--transtime);
+}
+
+a:hover {
+    cursor: pointer;
+}
+
+body {
+    margin: 0;
+}
+
+body,
+html {
+    font-family: sans-serif;
+    height: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+footer {
+    height: 100px;
+    padding-top: 20px;
+}
+
+footer .center {
+    text-align: center;
+}
+
+.container {
+    min-height: 100%;
+    padding-bottom: 50px;
+    padding-left: 10%;
+    padding-right: 10%;
+    padding-top: 5%;
+}
+
+.container .flash {
+    padding: 10px;
+    width: 400px;
+}
+
+.hide-menu,
+.show-menu {
+    cursor: pointer;
+    display: none;
+    font-size: 30px;
+    transition: var(--transtime);
+}
+
+.important {
+    font-size: xx-large;
+    padding-left: 25vw;
+    padding-right: 25vw;
+    padding-top: 30vh;
+    text-align: left;
+}
+
+.important span {
+    font-weight: bold;
+}
+
+.logo {
+    height: 80px;
+    padding-top: 10px;
+}
+
+.main-menu-dropdown span {
+    float: left;
+    font-family: monospace;
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 100px;
+    padding: 0 10px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: 0.7s;
+}
+
+.main-menu {
+    float: right;
+    font-family: monospace;
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 100px;
+}
+
+.main-menu a {
+    padding: 0 10px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: 0.7s;
+}
+
+.main-menu-dropdown {
+    height: 100px;
+    padding: 0 20px;
+}
+
+.show-menu {
+    float: right;
+    line-height: 100px;
+}
+
+#main-menu-check {
+    position: absolute;
+    visibility: hidden;
+    z-index: -1111;
+}
+
+@media screen and (max-width:800px) {
+    .hide-menu {
+        position: absolute;
+        right: 40px;
+        top: 40px;
+    }
+
+    .hide-menu,
+    .show-menu {
+        display: block;
+    }
+
+    .main-menu {
+        height: 100vh;
+        line-height: normal;
+        padding: 80px 0;
+        position: fixed;
+        right: -100%;
+        text-align: center;
+        top: 0;
+        transition: var(--transtime);
+        width: 100%;
+    }
+    .main-menu a {
+        display: block;
+        padding: 20px;
+    }
+
+    #main-menu-check:checked ~ .main-menu {
+        right: 0;
+    }
+}
+
+.entry {
+    border-radius: 0 10px 30px 0;
+    margin-bottom: 20px;
+    padding: 10px;
+}
+
+.entry h1,
+.entry h2 {
+    margin: 5px auto 2px auto;
+}
+
+.entry ul {
+    padding-left: 20;
+}
+
