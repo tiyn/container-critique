@@ -5,9 +5,15 @@ The blog is intended to be used to review and critique things.
 
 ## Features/To-Dos
 
-- [ ] Plain text support for blog entries
-  - [ ] HTML files (.html)
-  - [ ] Markdown Files (.md)
+
+- [ ] Accounts
+  - [x] Login
+  - [x] Logout
+  - [ ] Register
+- [ ] Review blog entries
+  - [ ] Writing entries
+  - [ ] Editing entries
+  - [ ] Deleting entries
 - [ ] Infinite-scroll blog page
 - [ ] Archive page
   - [ ] Months as headings
@@ -16,14 +22,16 @@ The blog is intended to be used to review and critique things.
 - [ ] Standalone article page
   - [ ] Links to scrolling blog page
 - [ ] RSS feed
-- [ ] Navigation
-  - [ ] Header
-  - [ ] Footer
-- [ ] Switchable CSS
-  - [ ] CSS dark-theme
-  - [ ] CSS light-theme
-- [ ] Config file
-- [ ] Docker installation
+- [ ] Eye candy
+  - [ ] Star rating
+  - [ ] Rich text editor
+- [x] Navigation
+  - [x] Header
+  - [x] Footer
+- [x] Switchable CSS
+  - [x] CSS dark-theme
+  - [x] CSS light-theme
+- [x] Docker installation
 - [ ] Logo
 
 ## Usage
@@ -48,12 +56,11 @@ The `config.py` can be found in the `src` folder.
 
 Set the following volumes with the -v tag.
 
-| Volume-Name   | Container mount             | Description                                                  |
-| ------------- | --------------------------- | ------------------------------------------------------------ |
-| `config-file` | `/blog/src/config.py`       | Config file                                                  |
-| `entries`     | `/blog/src/templates/entry` | Directory for blog entries                                   |
-| `css`         | `/blog/src/static/css`      | (optional) Directory for css files                           |
-| `html`        | `/blog/src/templates`       | (optional) Directory for templates (entry-volume not needed) |
+| Volume-Name   | Container mount        | Description                        |
+| ------------- | ---------------------- | ---------------------------------- |
+| `config-file` | `/blog/src/config.py`  | Config file                        |
+| `css`         | `/blog/src/static/css` | (optional) Directory for css files |
+| `html`        | `/blog/src/templates`  | (optional) Directory for templates |
 
 #### Ports
 

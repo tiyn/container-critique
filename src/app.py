@@ -1,57 +1,23 @@
 from flask import Flask, flash, make_response, render_template, request, redirect, abort, url_for
 from flask_login import current_user, login_user, LoginManager, logout_user
+from flask_wtf import CSRFProtect
 
 import content as con_gen
 import config
 
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired
-
 
 app = Flask(__name__)
-login = LoginManager(app)
-login.login_view = 'login'
+csrf = CSRFProtect()
+app.secret_key = "123534"
+csrf.init_app(app)
 
-class LoginForm(FlaskForm):
-    username = StringField("Username", validators=[DataRequired()])
-    password = PasswordField("Password", validators=[DataRequired()])
-    remember_me = BooleanField("Remember Me")
-    submit = SubmitField("Sign In")
+login = LoginManager(app)
+login.login_view = "login"
 
 TITLE = config.TITLE
 STYLE = config.STYLE
 DESCRIPTION = config.DESCRIPTION
 WEBSITE = config.WEBSITE
-
-from werkzeug.security import generate_password_hash, check_password_hash
-
-class User():
-
-    def __init__(self, username):
-        self.username = username
-        self.id = 1
-        self.is_active = True
-        self.is_authenticated = False
-        self.is_anonymous = False
-
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
-
-    def get_id(self):
-        return self.id
-
-u = User("marten")
-u.set_password("test")
-
-class Config(object):
-    SECRET_KEY = "123534"
-
-app.config.from_object(Config)
-
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -67,7 +33,7 @@ def index():
 
 @app.route("/archive")
 @app.route("/archive.html")
-def blog_archive():
+def archive():
     content = con_gen.gen_arch_string()
     return render_template("archive.html", title=TITLE, content_string=content, style=STYLE)
 
@@ -91,24 +57,36 @@ def feed():
     return response
 
 @login.user_loader
-def load_user(id):
+def load_user(ident):
     ## TODO: load user from db by id
-    return id
+    db_user = db.get_by_id(ident)
+    if db_user is not None:
+        return db.db_to_user(*db_user)
+    return None
+
+from login import LoginForm, User
+from database import Database
+
+db = Database()
 
 @app.route("/login", methods=["GET", "POST"])
+@app.route("/login.html", methods=["GET", "POST"])
 def login():
-    #if current_user.is_authenticated:
-    #    return redirect("/index")
+    if current_user.is_authenticated:
+        return redirect(url_for("index"))
     form = LoginForm()
     if form.validate_on_submit():
-        user = u
-        #user = form.username.data
-        if user is None or not user.check_password(form.password.data):
+        db_user = db.get_by_name(form.username.data)
+        if db_user is None:
+            flash("Invalid username or password")
+            return redirect(url_for("login"))
+        user = db.db_to_user(*db_user)
+        if not user.check_password(form.password.data):
             flash("Invalid username or password")
             return redirect(url_for("login"))
         login_user(user, remember=form.remember_me.data)
         return redirect(url_for("index"))
-    return render_template("login.html", title="Sign In", form=form, style=STYLE)
+    return render_template("login.html", title=TITLE, form=form, style=STYLE)
 
 @app.route('/logout')
 def logout():

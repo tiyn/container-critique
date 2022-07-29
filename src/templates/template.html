@@ -13,13 +13,13 @@
         <input type="checkbox" id="main-menu-check">
         <label for="main-menu-check" class="show-menu">&#9776;</label>
         <div class="main-menu">
-            <a href="/">Blog</a>
-            <a href="/archive">Archive</a>
+            <a href="{{ url_for('index') }}">Blog</a>
+            <a href="{{ url_for('archive') }}">Archive</a>
             <label for="main-menu-check" class="hide-menu">X</label>
             {% if current_user.is_anonymous %}
-            <a href="/login">Login</a>
+            <a href="{{ url_for('login') }}">Login</a>
             {% else %}
-            <a href="/logout">Logout</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
             {% endif %}
         </div>
     </div>

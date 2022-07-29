@@ -1,5 +1,3 @@
-ENTRY_DIR = "templates/entry"
-
 def gen_arch_string():
     """
     Creates and returns a archive string of every file in ENTRY_DIR.
