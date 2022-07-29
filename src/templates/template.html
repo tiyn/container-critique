@@ -16,6 +16,11 @@
             <a href="/">Blog</a>
             <a href="/archive">Archive</a>
             <label for="main-menu-check" class="hide-menu">X</label>
+            {% if current_user.is_anonymous %}
+            <a href="/login">Login</a>
+            {% else %}
+            <a href="/logout">Logout</a>
+            {% endif %}
         </div>
     </div>
     <!-- Menu -->

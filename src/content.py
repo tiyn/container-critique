@@ -1,4 +1,4 @@
-ENTRY_DIR = 'templates/entry'
+ENTRY_DIR = "templates/entry"
 
 def gen_arch_string():
     """
