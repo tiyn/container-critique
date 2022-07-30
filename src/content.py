@@ -32,8 +32,7 @@ def gen_arch_string():
         content_string += "[<a href=\"" + "/index.html#" + str(ident) + \
             "\">link</a> - <a href=\"/entry/" + \
             str(ident) + "\">standalone</a>] "
-        content_string += title + \
-            " (" + str(year) + ") - " + str(rating) + "/100<br>"
+        content_string += title + " - " + str(rating) + "/100<br>"
         content_string += "</li>\n"
 
     return content_string
