@@ -6,21 +6,21 @@ The blog is intended to be used to review and critique things.
 ## Features/To-Dos
 
 
-- [ ] Accounts
+- [x] Accounts
   - [x] Login
   - [x] Logout
-  - [ ] Register
+  - [x] Register
 - [ ] Review blog entries
-  - [ ] Writing entries
+  - [x] Writing entries
   - [ ] Editing entries
   - [ ] Deleting entries
 - [ ] Infinite-scroll blog page
-- [ ] Archive page
-  - [ ] Months as headings
-  - [ ] Links to scrolling blog page
-  - [ ] Links to standalone article
-- [ ] Standalone article page
-  - [ ] Links to scrolling blog page
+- [x] Archive page
+  - [x] Months as headings
+  - [x] Links to scrolling blog page
+  - [x] Links to standalone article
+- [x] Standalone article page
+  - [x] Links to scrolling blog page
 - [ ] RSS feed
 - [ ] Eye candy
   - [ ] Star rating
@@ -58,9 +58,9 @@ Set the following volumes with the -v tag.
 
 | Volume-Name   | Container mount        | Description                        |
 | ------------- | ---------------------- | ---------------------------------- |
-| `config-file` | `/blog/src/config.py`  | Config file                        |
-| `css`         | `/blog/src/static/css` | (optional) Directory for css files |
-| `html`        | `/blog/src/templates`  | (optional) Directory for templates |
+| `config-file` | `/blog/config.py`  | Config file                        |
+| `data`        | `/blog/data`       | Directory for data                 |
+| `css`         | `/blog/static/css` | (optional) Directory for css files |
 
 #### Ports
 

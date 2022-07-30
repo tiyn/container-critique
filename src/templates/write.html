@@ -1,0 +1,45 @@
+{% extends "template.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="writing">
+        <h1>Sign In</h1>
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.name.label }}<br>
+                {{ form.name(size=64) }}
+                {% for error in form.name.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.date.label }}<br>
+                {{ form.date }}
+                {% for error in form.date.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.text.label }}<br>
+                {{ form.text }}
+                {% for error in form.text.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.rating.label }}<br>
+                {{ form.rating }}
+                {% for error in form.rating.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+            </p>
+            <p>{{ form.submit() }}</p>
+            {% for mesg in get_flashed_messages() %}
+            <p>{{ mesg }}</p>
+            {% endfor %}
+        </form>
+    </div>
+</div>
+{% endblock %}

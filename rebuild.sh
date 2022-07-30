@@ -6,4 +6,5 @@ docker run --name container-critique \
     --restart unless-stopped \
     -p "5000:5000" \
     -e FLASK_ENV=development \
+    -v data:/blog/data
     -d tiyn/container-critique

@@ -1,14 +1,21 @@
-from flask import Flask, flash, make_response, render_template, request, redirect, abort, url_for
-from flask_login import current_user, login_user, LoginManager, logout_user
+from flask import Flask, flash, make_response, render_template, redirect, \
+    abort, url_for
+from flask_login import current_user, login_user, LoginManager, logout_user, \
+    login_required
 from flask_wtf import CSRFProtect
+import os
 
-import content as con_gen
 import config
+import content as con_gen
+from database import Database, User
+from forms import LoginForm, RegisterForm, WriteForm
 
 
 app = Flask(__name__)
 csrf = CSRFProtect()
-app.secret_key = "123534"
+db = Database()
+
+app.secret_key = os.urandom(32)
 csrf.init_app(app)
 
 login = LoginManager(app)
@@ -18,6 +25,8 @@ TITLE = config.TITLE
 STYLE = config.STYLE
 DESCRIPTION = config.DESCRIPTION
 WEBSITE = config.WEBSITE
+REGISTER = config.REGISTER
+
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -38,9 +47,9 @@ def archive():
     return render_template("archive.html", title=TITLE, content_string=content, style=STYLE)
 
 
-@app.route("/entry/<path>")
-def entry(path):
-    content = con_gen.gen_stand_string(path)
+@app.route("/entry/<ident>")
+def entry(ident):
+    content = con_gen.gen_stand_string(ident)
     if content != "":
         return render_template("standalone.html", title=TITLE, content_string=content, style=STYLE)
     abort(404)
@@ -56,18 +65,14 @@ def feed():
     response.headers["Content-Type"] = "application/rss+xml"
     return response
 
+
 @login.user_loader
 def load_user(ident):
-    ## TODO: load user from db by id
-    db_user = db.get_by_id(ident)
+    db_user = db.get_user_by_id(ident)
     if db_user is not None:
         return db.db_to_user(*db_user)
     return None
 
-from login import LoginForm, User
-from database import Database
-
-db = Database()
 
 @app.route("/login", methods=["GET", "POST"])
 @app.route("/login.html", methods=["GET", "POST"])
@@ -76,22 +81,59 @@ def login():
         return redirect(url_for("index"))
     form = LoginForm()
     if form.validate_on_submit():
-        db_user = db.get_by_name(form.username.data)
-        if db_user is None:
-            flash("Invalid username or password")
-            return redirect(url_for("login"))
-        user = db.db_to_user(*db_user)
-        if not user.check_password(form.password.data):
-            flash("Invalid username or password")
-            return redirect(url_for("login"))
-        login_user(user, remember=form.remember_me.data)
-        return redirect(url_for("index"))
+        db_user = db.get_user_by_name(form.username.data)
+        if db_user is not None:
+            user = db.db_to_user(*db_user)
+            if user.check_password(form.password.data):
+                login_user(user)
+                return redirect(url_for("index"))
+        flash("Invalid username or password.")
+        return redirect(url_for("login"))
     return render_template("login.html", title=TITLE, form=form, style=STYLE)
 
+
 @app.route('/logout')
+@app.route('/logout.html')
 def logout():
     logout_user()
     return redirect(url_for('index'))
+
+
+@app.route("/register", methods=["GET", "POST"])
+@app.route("/register.html", methods=["GET", "POST"])
+def register():
+    if current_user.is_authenticated or not REGISTER:
+        return redirect(url_for("index"))
+    form = RegisterForm()
+    if form.validate_on_submit():
+        if not REGISTER:
+            return redirect(url_for("index"))
+        db_user = db.get_user_by_name(form.username.data)
+        if db_user is None:
+            user = User(form.username.data)
+            user.set_password(form.password.data)
+            ident = db.insert_user(user)
+            if ident is not None:
+                user.set_id(ident)
+                login_user(user)
+                return redirect(url_for("index"))
+        flash("An error occured during registration.")
+        return redirect(url_for("register"))
+    return render_template("register.html", title=TITLE, form=form, style=STYLE)
+
+
+@app.route("/write", methods=["GET", "POST"])
+@app.route("/write.html", methods=["GET", "POST"])
+@login_required
+def write():
+    if not current_user.is_authenticated:
+        return redirect(url_for("index"))
+    form = WriteForm()
+    if form.validate_on_submit():
+        db.insert_entry(form.name.data, form.date.data, form.text.data, form.rating.data, current_user.id)
+        return redirect(url_for("index"))
+    return render_template("write.html", title=TITLE, form=form, style=STYLE)
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0")

@@ -6,6 +6,8 @@ COPY src /blog
 
 WORKDIR /blog
 
+VOLUME /blog/data
+
 RUN pip3 install -r requirements.txt
 
 VOLUME /blog/templates/entry

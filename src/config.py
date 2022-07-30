@@ -9,3 +9,6 @@ WEBSITE = "localhost:5000"
 
 # Theme for the blog: dark, light
 STYLE = "dark"
+
+# Allow new registrations
+REGISTER = True
