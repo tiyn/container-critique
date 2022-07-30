@@ -1,5 +1,7 @@
 # Container Critique
 
+![container-critique-logo](container-critique.png)
+
 This is a blog based on Pythons Flask framework.
 The blog is intended to be used to review and critique things.
 
@@ -33,7 +35,7 @@ The blog is intended to be used to review and critique things.
   - [x] CSS dark-theme
   - [x] CSS light-theme
 - [x] Docker installation
-- [ ] Logo
+- [x] Logo
 
 ## Usage
 
