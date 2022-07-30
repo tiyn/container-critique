@@ -60,9 +60,9 @@ def gen_index_string():
         username = db.get_user_by_id(entry[5])[1]
         reviewed = entry[6]
         content_string += "<div class=\"entry\">\n"
-        content_string += "<h2 id=\"" + \
+        content_string += "<h1 id=\"" + \
             str(ident) + "\">" + title + " (" + year + ") - " + \
-            str(rating) + "/100</h2>\n"
+            str(rating) + "/100</h1>\n"
         content_string += "[<a href=\"" + "/entry/" + \
             str(ident) + "\">" + "standalone" + "</a>]<br>\n"
         content_string += text
@@ -128,7 +128,8 @@ def get_rss_string():
         username = db.get_user_by_id(entry[5])[1]
         reviewed = entry[6]
         content_string += "<item>\n"
-        content_string += "<title>" + title + "(" + year + ") " + str(rating) + "/100 </title>\n"
+        content_string += "<title>" + title + \
+            "(" + year + ") " + str(rating) + "/100 </title>\n"
         content_string += "<guid>" + config.WEBSITE + \
             "/index.html#" + str(ident) + "</guid>\n"
         content_string += "<pubDate>" + reviewed + "</pubDate>\n"

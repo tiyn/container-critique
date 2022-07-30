@@ -22,11 +22,14 @@
                 {% endfor %}
             </p>
             <p>
+
                 {{ form.text.label }}<br>
                 {{ form.text }}
                 {% for error in form.text.errors %}
                 <span style="color: red;">[{{ error }}]</span>
                 {% endfor %}
+                {{ ckeditor.load() }}
+                {{ ckeditor.config(name="text") }}
             </p>
             <p>
                 {{ form.rating.label }}<br>

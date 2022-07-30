@@ -1,5 +1,6 @@
 from flask import Flask, flash, make_response, render_template, redirect, \
-    abort, url_for
+    abort, url_for, request
+from flask_ckeditor import CKEditor
 from flask_login import current_user, login_user, LoginManager, logout_user, \
     login_required
 from flask_wtf import CSRFProtect
@@ -14,6 +15,7 @@ from forms import LoginForm, RegisterForm, WriteForm
 app = Flask(__name__)
 csrf = CSRFProtect()
 db = Database()
+ckeditor = CKEditor(app)
 
 app.secret_key = os.urandom(32)
 csrf.init_app(app)
@@ -131,8 +133,11 @@ def write():
     if not current_user.is_authenticated:
         return redirect(url_for("index"))
     form = WriteForm()
+    print("data", form.text.data)
+    print("data", request.form.get("text"))
     if form.validate_on_submit():
-        db.insert_entry(form.name.data, form.date.data, form.text.data, form.rating.data, current_user.id)
+        db.insert_entry(form.name.data, form.date.data,
+                        form.text.data, form.rating.data, current_user.id)
         return redirect(url_for("index"))
     return render_template("write.html", title=TITLE, form=form, style=STYLE)
 

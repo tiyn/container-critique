@@ -3,6 +3,7 @@ import os
 import sqlite3
 from werkzeug.security import generate_password_hash, check_password_hash
 
+
 class User():
 
     def __init__(self, name, pass_hash=None):
@@ -129,4 +130,4 @@ class Database:
 #db = Database()
 #db.insert_entry("name", "2020", "text", 50, 1)
 #res = db.get_entries()
-#print(res)
+# print(res)
