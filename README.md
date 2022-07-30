@@ -24,7 +24,8 @@ The blog is intended to be used to review and critique things.
 - [x] RSS feed
 - [ ] Eye candy
   - [ ] Star rating
-  - [ ] Rich text editor
+  - [x] Rich text editor
+  - [ ] CSS for all tags
 - [x] Navigation
   - [x] Header
   - [x] Footer
