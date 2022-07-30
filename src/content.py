@@ -1,3 +1,4 @@
+import config
 from database import Database
 
 db = Database()
@@ -113,4 +114,26 @@ def get_rss_string():
     Returns:
     string: rss-string of everything that is in the ENTRY_DIR.
     """
-    return ""
+    content_string = ""
+    entries = db.get_entries()
+    if entries is None:
+        return ""
+    entries.reverse()
+    for entry in entries:
+        ident = entry[0]
+        title = entry[1]
+        year = entry[2]
+        text = entry[3]
+        rating = entry[4]
+        username = db.get_user_by_id(entry[5])[1]
+        reviewed = entry[6]
+        content_string += "<item>\n"
+        content_string += "<title>" + title + "(" + year + ") " + str(rating) + "/100 </title>\n"
+        content_string += "<guid>" + config.WEBSITE + \
+            "/index.html#" + str(ident) + "</guid>\n"
+        content_string += "<pubDate>" + reviewed + "</pubDate>\n"
+        content_string += "<description>"
+        content_string += text
+        content_string += "</description>\n"
+        content_string += "</item>\n"
+    return content_string

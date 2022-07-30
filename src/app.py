@@ -55,6 +55,8 @@ def entry(ident):
     abort(404)
 
 
+@app.route("/feed")
+@app.route("/rss")
 @app.route("/feed.xml")
 @app.route("/rss.xml")
 def feed():
