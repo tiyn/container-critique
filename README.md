@@ -14,7 +14,7 @@ The blog is intended to be used to review and critique things.
   - [x] Writing entries
   - [ ] Editing entries
   - [ ] Deleting entries
-- [ ] Infinite-scroll blog page
+- [x] Infinite-scroll blog page
 - [x] Archive page
   - [x] Months as headings
   - [x] Links to scrolling blog page
