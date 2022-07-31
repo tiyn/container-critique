@@ -64,10 +64,8 @@ def entry(ident):
 def feed():
     content = con_gen.get_rss_string()
     rss_xml = render_template("rss.xml", content_string=content, title=TITLE,
-                              description=DESCRIPTION, website=WEBSITE)
-    response = make_response(rss_xml)
-    response.headers["Content-Type"] = "application/rss+xml"
-    return response
+                              description=DESCRIPTION)
+    return rss_xml
 
 
 @login.user_loader
