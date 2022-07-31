@@ -35,6 +35,7 @@ def gen_arch_string():
     if entries is None:
         return ""
     entries.sort(key=lambda y: y[2])
+    entries.reverse()
     for entry in entries:
         ident = entry[0]
         title = entry[1]
@@ -47,9 +48,9 @@ def gen_arch_string():
             content_string += "<ul>\n"
             last_year = year
         content_string += "<li>"
-        content_string += "[<a href=\"" + url_for("index", _anchor=str(ident)) + \
-            "\">link</a> - <a href=\"" + url_for("entry", ident=str(ident)) + \
-            "\">standalone</a>] "
+        content_string += "[<a href=\"" + \
+            url_for("index", _anchor=str(ident)) + "\">link</a> - <a href=\"" \
+            + url_for("entry", ident=str(ident)) + "\">standalone</a>] "
         content_string += title + " " + rating_to_star(rating)
         content_string += "<br></li>\n"
 

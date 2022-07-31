@@ -32,34 +32,38 @@ REGISTER = config.REGISTER
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template("error.html", title=TITLE, errorcode="404", style=STYLE), 404
+    return render_template("error.html", title=TITLE, errorcode="404",
+                           style=STYLE), 404
 
 
 @app.route("/")
 @app.route("/index.html")
 def index():
     content = con_gen.gen_index_string()
-    return render_template("index.html", title=TITLE, content_string=content, style=STYLE)
+    return render_template("index.html", title=TITLE, content_string=content,
+                           style=STYLE)
 
 
 @app.route("/archive")
 @app.route("/archive.html")
 def archive():
     content = con_gen.gen_arch_string()
-    return render_template("archive.html", title=TITLE, content_string=content, style=STYLE)
+    return render_template("archive.html", title=TITLE, content_string=content,
+                           style=STYLE)
 
 
 @app.route("/entry/<ident>")
 def entry(ident):
     content = con_gen.gen_stand_string(ident)
     if content != "":
-        return render_template("standalone.html", title=TITLE, content_string=content, style=STYLE)
+        return render_template("standalone.html", title=TITLE,
+                               content_string=content, style=STYLE)
     abort(404)
 
 
 @app.route("/feed")
-@app.route("/rss")
 @app.route("/feed.xml")
+@app.route("/rss")
 @app.route("/rss.xml")
 def feed():
     content = con_gen.get_rss_string()

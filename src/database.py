@@ -69,7 +69,8 @@ class Database:
         if self.check_user_name(user.name) and user.pass_hash is not None:
             db = self.connect()
             crs = db.cursor()
-            query = "INSERT INTO " + self.USER_TABLE_FILE + "(`name`,`password`)" + \
+            query = "INSERT INTO " + self.USER_TABLE_FILE + \
+                    "(`name`,`password`)" + \
                     "VALUES (?, ?) ON CONFLICT DO NOTHING"
             crs.execute(query, (user.name, user.pass_hash))
             db.commit()
@@ -82,8 +83,9 @@ class Database:
         db = self.connect()
         crs = db.cursor()
         reviewed = dt.today().strftime('%Y-%m-%d')
-        query = "INSERT INTO " + self.ENTRY_TABLE_FILE + "(`name`,`date`, `text`, `rating`, `user_id`, `reviewed`)" + \
-                "VALUES (?, ?, ?, ?, ?, ?)"
+        query = "INSERT INTO " + self.ENTRY_TABLE_FILE + \
+            "(`name`,`date`, `text`, `rating`, `user_id`, `reviewed`)" + \
+            "VALUES (?, ?, ?, ?, ?, ?)"
         crs.execute(query, (name, date, text, rating, user_id, reviewed))
         db.commit()
         return crs.lastrowid
@@ -125,9 +127,3 @@ class Database:
         user = User(name, pass_hash)
         user.set_id(ident)
         return user
-
-
-#db = Database()
-#db.insert_entry("name", "2020", "text", 50, 1)
-#res = db.get_entries()
-# print(res)

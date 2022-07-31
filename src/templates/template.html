@@ -1,3 +1,8 @@
+{% set navigation_bar = [
+    (url_for("index"), 'index', 'Blog'),
+    (url_for("archive"), 'archive', 'Archive')
+] -%}
+
 <html>
 <head>
     <title>{{ title }}</title>
@@ -13,8 +18,9 @@
         <input type="checkbox" id="main-menu-check">
         <label for="main-menu-check" class="show-menu">&#9776;</label>
         <div class="main-menu">
-            <a href="{{ url_for('index') }}">Blog</a>
-            <a href="{{ url_for('archive') }}">Archive</a>
+            {% for href, id, caption in navigation_bar %}
+            <a href="{{ href|e }}">{{ caption|e }}</a>
+            {% endfor %}
             <label for="main-menu-check" class="hide-menu">X</label>
         </div>
     </div>
