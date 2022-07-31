@@ -23,41 +23,37 @@ csrf.init_app(app)
 login = LoginManager(app)
 login.login_view = "login"
 
-TITLE = config.TITLE
-STYLE = config.STYLE
-DESCRIPTION = config.DESCRIPTION
-WEBSITE = config.WEBSITE
-REGISTER = config.REGISTER
+
+@app.context_processor
+def inject_title():
+    return dict(title=config.TITLE, style=config.STYLE,
+                description=config.DESCRIPTION)
 
 
 @app.errorhandler(404)
 def page_not_found(e):
-    return render_template("error.html", title=TITLE, errorcode="404",
-                           style=STYLE), 404
+    return render_template("error.html", errorcode="404"), 404
 
 
 @app.route("/")
 @app.route("/index.html")
 def index():
     content = con_gen.gen_index_string()
-    return render_template("index.html", title=TITLE, content_string=content,
-                           style=STYLE)
+    return render_template("index.html", content_string=content)
 
 
 @app.route("/archive")
 @app.route("/archive.html")
 def archive():
     content = con_gen.gen_arch_string()
-    return render_template("archive.html", title=TITLE, content_string=content,
-                           style=STYLE)
+    return render_template("archive.html", content_string=content)
 
 
 @app.route("/entry/<ident>")
 def entry(ident):
     content = con_gen.gen_stand_string(ident)
     if content != "":
-        return render_template("standalone.html", title=TITLE,
-                               content_string=content, style=STYLE)
+        return render_template("standalone.html", content_string=content)
     abort(404)
 
 
@@ -67,8 +63,7 @@ def entry(ident):
 @app.route("/rss.xml")
 def feed():
     content = con_gen.get_rss_string()
-    rss_xml = render_template("rss.xml", content_string=content, title=TITLE,
-                              description=DESCRIPTION)
+    rss_xml = render_template("rss.xml", content_string=content)
     return rss_xml
 
 
@@ -95,7 +90,7 @@ def login():
                 return redirect(url_for("index"))
         flash("Invalid username or password.")
         return redirect(url_for("login"))
-    return render_template("login.html", title=TITLE, form=form, style=STYLE)
+    return render_template("login.html", form=form)
 
 
 @app.route('/logout')
@@ -112,7 +107,7 @@ def register():
         return redirect(url_for("index"))
     form = RegisterForm()
     if form.validate_on_submit():
-        if not REGISTER:
+        if not config.ALLOW_REGISTRATION:
             return redirect(url_for("index"))
         db_user = db.get_user_by_name(form.username.data)
         if db_user is None:
@@ -125,7 +120,7 @@ def register():
                 return redirect(url_for("index"))
         flash("An error occured during registration.")
         return redirect(url_for("register"))
-    return render_template("register.html", title=TITLE, form=form, style=STYLE)
+    return render_template("register.html", form=form)
 
 
 @app.route("/write", methods=["GET", "POST"])
@@ -141,7 +136,7 @@ def write():
         db.insert_entry(form.name.data, form.date.data,
                         form.text.data, form.rating.data, current_user.id)
         return redirect(url_for("index"))
-    return render_template("write.html", title=TITLE, form=form, style=STYLE)
+    return render_template("write.html", form=form)
 
 
 if __name__ == "__main__":

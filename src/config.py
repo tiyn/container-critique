@@ -11,4 +11,4 @@ WEBSITE = "localhost:5000"
 STYLE = "dark"
 
 # Allow new registrations
-REGISTER = True
+ALLOW_REGISTRATION = True

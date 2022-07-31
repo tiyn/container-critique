@@ -1,6 +1,5 @@
 from flask import url_for
 
-import config
 from database import Database
 
 db = Database()
