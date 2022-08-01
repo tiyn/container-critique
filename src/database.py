@@ -26,6 +26,28 @@ class User():
     def get_id(self):
         return self.id
 
+class Item():
+
+    def __init__(self, name):
+        self.name = name
+        self.id = None
+
+    def set_id(self, ident):
+        self.id = ident
+
+class Entry():
+
+    def __init__(self, item_id, date, text, rating, user_id, reviewed):
+        self.item_id = item_id
+        self.date = date
+        self.text = text
+        self.rating = rating
+        self.user_id = user_id
+        self.reviewed = reviewed
+
+    def set_id(self, ident):
+        self.id = ident
+
 
 class Database:
 
@@ -118,9 +140,13 @@ class Database:
         crs = db.cursor()
         query = "SELECT * FROM " + self.ENTRY_TABLE_FILE + " WHERE id = ?"
         crs.execute(query, (ident, ))
-        return crs.fetchone()
+        fetched = crs.fetchone()
+        if fetched is None:
+            return None
+        else:
+            return self.db_to_entry(*fetched)
 
-    def get_entries_by_name(self, name):
+    def get_entries_by_user(self, name):
         db = self.connect()
         crs = db.cursor()
         query = "SELECT * FROM " + self.ENTRY_TABLE_FILE + \
@@ -134,7 +160,11 @@ class Database:
         crs = db.cursor()
         query = "SELECT * FROM " + self.ITEM_TABLE_FILE + " WHERE id = ?"
         crs.execute(query, (ident, ))
-        return crs.fetchone()
+        fetched = crs.fetchone()
+        if fetched is None:
+            return None
+        else:
+            return self.db_to_item(*fetched)
 
     def get_user_by_id(self, ident):
         db = self.connect()
@@ -162,3 +192,13 @@ class Database:
         user = User(name, pass_hash)
         user.set_id(ident)
         return user
+
+    def db_to_item(self, ident, name):
+        item = Item(name)
+        item.set_id(ident)
+        return item
+
+    def db_to_entry(self, ident, item_id, date, text, rating, user_id, reviewed):
+        entry = Entry(item_id, date, text, rating, user_id, reviewed)
+        entry.set_id(ident)
+        return entry

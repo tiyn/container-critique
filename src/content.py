@@ -39,7 +39,7 @@ def gen_arch_string():
     entries.reverse()
     for entry in entries:
         ident = entry[0]
-        title = db.get_item_by_id(entry[1])[1]
+        title = db.get_item_by_id(entry[1]).name
         year = entry[2]
         rating = entry[4]
         username = db.get_user_by_id(entry[5]).name
@@ -67,7 +67,7 @@ def gen_user_string(name):
     """
     content_string = ""
     last_year = ""
-    entries = db.get_entries_by_name(name)
+    entries = db.get_entries_by_user(name)
     if entries is None:
         return ""
     entries.sort(key=lambda y: y[1])
@@ -76,7 +76,7 @@ def gen_user_string(name):
     entries.reverse()
     for entry in entries:
         ident = entry[0]
-        title = db.get_item_by_id(entry[1])[1]
+        title = db.get_item_by_id(entry[1]).name
         year = entry[2]
         rating = entry[4]
         username = db.get_user_by_id(entry[5]).name
@@ -110,7 +110,7 @@ def gen_index_string():
     entries.reverse()
     for entry in entries:
         ident = entry[0]
-        title = db.get_item_by_id(entry[1])[1]
+        title = db.get_item_by_id(entry[1]).name
         year = entry[2]
         text = entry[3]
         rating = entry[4]
@@ -142,13 +142,13 @@ def gen_stand_string(ident):
     entry = db.get_entry_by_id(ident)
     content_string = ""
     if entry is not None:
-        ident = entry[0]
-        title = db.get_item_by_id(entry[1])[1]
-        year = entry[2]
-        text = entry[3]
-        rating = entry[4]
-        username = db.get_user_by_id(entry[5]).name
-        reviewed = entry[6]
+        ident = entry.id
+        title = db.get_item_by_id(entry.item_id).name
+        year = entry.date
+        text = entry.text
+        rating = entry.rating
+        username = db.get_user_by_id(entry.user_id).name
+        reviewed = entry.reviewed
         content_string += "<h1>" + title + \
             " (" + year + ") "
         content_string += rating_to_star(rating)
@@ -179,7 +179,7 @@ def get_rss_string():
     entries.reverse()
     for entry in entries:
         ident = entry[0]
-        title = db.get_item_by_id(entry[1])[1]
+        title = db.get_item_by_id(entry[1]).name
         year = entry[2]
         text = entry[3]
         rating = entry[4]
