@@ -15,16 +15,17 @@ class User():
         self.pass_hash = pass_hash
 
     def set_password(self, password):
-        self.pass_hash = password
+        self.pass_hash = generate_password_hash(password)
 
     def set_id(self, ident):
         self.id = ident
 
     def check_password(self, password):
-        return self.pass_hash == password
+        return check_password_hash(self.pass_hash, password)
 
     def get_id(self):
         return self.id
+
 
 class Item():
 
@@ -34,6 +35,7 @@ class Item():
 
     def set_id(self, ident):
         self.id = ident
+
 
 class Entry():
 
@@ -90,14 +92,15 @@ class Database:
         crs.execute(query)
         db.commit()
 
-    def insert_user(self, user):
-        if self.get_user_by_name(user.name) is None and user.pass_hash is not None:
+    def insert_user(self, username, password):
+        pass_hash = generate_password_hash(password)
+        if self.get_user_by_name(username) is None and pass_hash is not None:
             db = self.connect()
             crs = db.cursor()
             query = "INSERT INTO " + self.USER_TABLE_FILE + \
                     "(`name`,`password`)" + \
                     "VALUES (?, ?) ON CONFLICT DO NOTHING"
-            crs.execute(query, (user.name, user.pass_hash))
+            crs.execute(query, (username, pass_hash))
             db.commit()
             return crs.lastrowid
         return None
@@ -133,7 +136,10 @@ class Database:
         crs = db.cursor()
         query = "SELECT * FROM " + self.ENTRY_TABLE_FILE
         crs.execute(query)
-        return crs.fetchall()
+        res = []
+        for item in crs.fetchall():
+            res.append(self.db_to_entry(*item))
+        return res
 
     def get_entry_by_id(self, ident):
         db = self.connect()
@@ -153,7 +159,10 @@ class Database:
                 " WHERE user_id = (SELECT id FROM " + self.USER_TABLE_FILE + \
                 " WHERE name = ?)"
         crs.execute(query, (name, ))
-        return crs.fetchall()
+        res = []
+        for item in crs.fetchall():
+            res.append(self.db_to_entry(*item))
+        return res
 
     def get_item_by_id(self, ident):
         db = self.connect()

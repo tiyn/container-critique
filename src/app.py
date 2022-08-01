@@ -1,5 +1,4 @@
-from flask import Flask, flash, make_response, render_template, redirect, \
-    abort, url_for, request
+from flask import Flask, flash, render_template, redirect, abort, url_for
 from flask_ckeditor import CKEditor
 from flask_login import current_user, login_user, LoginManager, logout_user, \
     login_required
@@ -8,7 +7,7 @@ import os
 
 import config
 import content as con_gen
-from database import Database, User
+from database import Database
 from forms import LoginForm, RegisterForm, WriteForm
 
 
@@ -109,11 +108,9 @@ def register():
     if form.validate_on_submit():
         user = db.get_user_by_name(form.username.data)
         if user is None:
-            user = User(form.username.data)
-            user.set_password(form.password.data)
-            ident = db.insert_user(user)
+            ident = db.insert_user(form.username.data, form.password.data)
             if ident is not None:
-                user.set_id(ident)
+                user = db.get_user_by_id(ident)
                 login_user(user)
                 return redirect(url_for("index"))
         flash("An error occured during registration.")
@@ -139,7 +136,7 @@ def write_entry():
 def delete_entry(ident):
     if not current_user.is_authenticated:
         return redirect(url_for("index"))
-    if current_user.id == db.get_entry_by_id(ident)[5]:
+    if current_user.id == db.get_entry_by_id(ident).user_id:
         db.delete_entry(ident)
     return redirect(url_for("index"))
 

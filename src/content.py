@@ -33,16 +33,16 @@ def gen_arch_string():
     entries = db.get_entries()
     if entries is None:
         return ""
-    entries.sort(key=lambda y: y[1])
+    entries.sort(key=lambda y: db.get_item_by_id(y.item_id).name)
     entries.reverse()
-    entries.sort(key=lambda y: y[2])
+    entries.sort(key=lambda y: y.date)
     entries.reverse()
     for entry in entries:
-        ident = entry[0]
-        title = db.get_item_by_id(entry[1]).name
-        year = entry[2]
-        rating = entry[4]
-        username = db.get_user_by_id(entry[5]).name
+        ident = entry.id
+        title = db.get_item_by_id(entry.item_id).name
+        year = entry.date
+        rating = entry.rating
+        username = db.get_user_by_id(entry.user_id).name
         if year != last_year:
             if last_year != "":
                 content_string += "</ul>\n"
@@ -70,16 +70,16 @@ def gen_user_string(name):
     entries = db.get_entries_by_user(name)
     if entries is None:
         return ""
-    entries.sort(key=lambda y: y[1])
+    entries.sort(key=lambda y: db.get_item_by_id(y.item_id).name)
     entries.reverse()
-    entries.sort(key=lambda y: y[2])
+    entries.sort(key=lambda y: y.date)
     entries.reverse()
     for entry in entries:
-        ident = entry[0]
-        title = db.get_item_by_id(entry[1]).name
-        year = entry[2]
-        rating = entry[4]
-        username = db.get_user_by_id(entry[5]).name
+        ident = entry.id
+        title = db.get_item_by_id(entry.item_id).name
+        year = entry.date
+        rating = entry.rating
+        username = db.get_user_by_id(entry.user_id).name
         if year != last_year:
             if last_year != "":
                 content_string += "</ul>\n"
@@ -109,13 +109,13 @@ def gen_index_string():
         return ""
     entries.reverse()
     for entry in entries:
-        ident = entry[0]
-        title = db.get_item_by_id(entry[1]).name
-        year = entry[2]
-        text = entry[3]
-        rating = entry[4]
-        username = db.get_user_by_id(entry[5]).name
-        reviewed = entry[6]
+        ident = entry.id
+        title = db.get_item_by_id(entry.item_id).name
+        year = entry.date
+        text = entry.text
+        rating = entry.rating
+        username = db.get_user_by_id(entry.user_id).name
+        reviewed = entry.reviewed
         content_string += "<div class=\"entry\">\n"
         content_string += "<h1 id=\"" + str(ident) + "\"><a href=\"" + \
             url_for("entry", ident=str(ident)) + "\">" + title + \
@@ -178,13 +178,13 @@ def get_rss_string():
         return ""
     entries.reverse()
     for entry in entries:
-        ident = entry[0]
-        title = db.get_item_by_id(entry[1]).name
-        year = entry[2]
-        text = entry[3]
-        rating = entry[4]
-        username = db.get_user_by_id(entry[5]).name
-        reviewed = entry[6]
+        ident = entry.id
+        title = db.get_item_by_id(entry.item_id).name
+        year = entry.date
+        text = entry.text
+        rating = entry.rating
+        username = db.get_user_by_id(entry.user_id).name
+        reviewed = entry.reviewed
         content_string += "<item>\n"
         content_string += "<title>" + title + "(" + year + ") " + \
             rating_to_star(rating) + " by " + username + "</title>\n"
