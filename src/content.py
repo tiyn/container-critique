@@ -158,6 +158,9 @@ def gen_stand_string(ident):
             username + "</a> on <a href=\"" + \
             url_for("index", _anchor=str(ident)) + "\">" + str(reviewed) + \
             "</a></small><br>\n"
+        content_string += "<small>[<a href=\"" + \
+            url_for("delete_entry", ident=ident) + \
+            "\">delete entry</a>]</small>"
         content_string += text + "<br>\n"
     return content_string
 

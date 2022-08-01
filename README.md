@@ -16,7 +16,7 @@ The blog is intended to be used to review and critique things.
 - [ ] Review blog entries
   - [x] Writing entries
   - [ ] Editing entries
-  - [ ] Deleting entries
+  - [x] Deleting entries
 - [x] Infinite-scroll blog page
 - [x] Archive page
   - [x] Months as headings

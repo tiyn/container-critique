@@ -36,14 +36,12 @@ def page_not_found(e):
 
 
 @app.route("/")
-@app.route("/index.html")
 def index():
     content = con_gen.gen_index_string()
     return render_template("index.html", content_string=content)
 
 
 @app.route("/archive")
-@app.route("/archive.html")
 def archive():
     entries = db.get_entries()
     content = con_gen.gen_arch_string()
@@ -67,9 +65,6 @@ def entry(ident):
 
 
 @app.route("/feed")
-@app.route("/feed.xml")
-@app.route("/rss")
-@app.route("/rss.xml")
 def feed():
     content = con_gen.get_rss_string()
     rss_xml = render_template("rss.xml", content_string=content)
@@ -85,7 +80,6 @@ def load_user(ident):
 
 
 @app.route("/login", methods=["GET", "POST"])
-@app.route("/login.html", methods=["GET", "POST"])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("index"))
@@ -103,14 +97,12 @@ def login():
 
 
 @app.route('/logout')
-@app.route('/logout.html')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for("index"))
 
 
 @app.route("/register", methods=["GET", "POST"])
-@app.route("/register.html", methods=["GET", "POST"])
 def register():
     if current_user.is_authenticated or not config.ALLOW_REGISTRATION:
         return redirect(url_for("index"))
@@ -130,20 +122,27 @@ def register():
     return render_template("register.html", form=form)
 
 
-@app.route("/write", methods=["GET", "POST"])
-@app.route("/write.html", methods=["GET", "POST"])
+@app.route("/write_entry", methods=["GET", "POST"])
 @login_required
-def write():
+def write_entry():
     if not current_user.is_authenticated:
         return redirect(url_for("index"))
     form = WriteForm()
-    print("data", form.text.data)
-    print("data", request.form.get("text"))
     if form.validate_on_submit():
         db.insert_entry(form.name.data, form.date.data,
                         form.text.data, form.rating.data, current_user.id)
         return redirect(url_for("index"))
     return render_template("write.html", form=form)
+
+
+@app.route("/delete_entry/<ident>", methods=["GET", "POST"])
+@login_required
+def delete_entry(ident):
+    if not current_user.is_authenticated:
+        return redirect(url_for("index"))
+    if current_user.id == db.get_entry_by_id(ident)[5]:
+        db.delete_entry(ident)
+    return redirect(url_for("index"))
 
 
 if __name__ == "__main__":

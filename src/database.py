@@ -36,7 +36,8 @@ class Database:
         self.setup_db()
 
     def connect(self):
-        """Connect to an existing database instance based on the object
+        """
+        Connect to an existing database instance based on the object
         attributes.
         """
         path = os.path.join(self.DB_DIR, "data.db")
@@ -64,8 +65,6 @@ class Database:
         db.commit()
 
     def insert_user(self, user):
-        """Insert a new user into the database.
-        """
         if self.check_user_name(user.name) and user.pass_hash is not None:
             db = self.connect()
             crs = db.cursor()
@@ -78,8 +77,6 @@ class Database:
         return None
 
     def insert_entry(self, name, date, text, rating, user_id=None):
-        """Insert a new user into the database.
-        """
         db = self.connect()
         crs = db.cursor()
         reviewed = dt.today().strftime('%Y-%m-%d')
@@ -87,6 +84,19 @@ class Database:
             "(`name`,`date`, `text`, `rating`, `user_id`, `reviewed`)" + \
             "VALUES (?, ?, ?, ?, ?, ?)"
         crs.execute(query, (name, date, text, rating, user_id, reviewed))
+        db.commit()
+        return crs.lastrowid
+
+    def check_user_name(self, name):
+        if self.get_user_by_name(name) is None:
+            return True
+        return False
+
+    def delete_entry(self, ident):
+        db = self.connect()
+        crs = db.cursor()
+        query = "DELETE FROM " + self.ENTRY_TABLE_FILE + " WHERE id = ?"
+        crs.execute(query, (ident, ))
         db.commit()
         return crs.lastrowid
 
@@ -105,11 +115,6 @@ class Database:
                 " WHERE name = ?)"
         crs.execute(query, (name, ))
         return crs.fetchall()
-
-    def check_user_name(self, name):
-        if self.get_user_by_name(name) is None:
-            return True
-        return False
 
     def get_entry_by_id(self, ident):
         db = self.connect()
