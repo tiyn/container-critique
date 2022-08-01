@@ -12,7 +12,7 @@ The blog is intended to be used to review and critique things.
   - [x] Login
   - [x] Logout
   - [x] Register
-  - [ ] User Page
+  - [x] User Page
 - [ ] Review blog entries
   - [x] Writing entries
   - [ ] Editing entries

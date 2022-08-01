@@ -30,18 +30,16 @@
 	{% endblock %}
     <!-- Content -->
     <footer>
-        <div class="center">
-            Made with <a href="https://github.com/tiyn/container-critique">Container Critique </a>.<br>
-            {% if current_user.is_anonymous %}
-            <a href="{{ url_for('login') }}">Login</a>
-            -
-            <a href="{{ url_for('register') }}">Register</a>
-            {% else %}
-            <a href="{{ url_for('logout') }}">Logout</a>
-            -
-            <a href="{{ url_for('write') }}">Write entry</a>
-            {% endif %}
-        </div>
+        Made with <a href="https://github.com/tiyn/container-critique">Container Critique </a>.<br>
+        {% if current_user.is_anonymous %}
+        <a href="{{ url_for('login') }}">Login</a>
+        -
+        <a href="{{ url_for('register') }}">Register</a>
+        {% else %}
+        <a href="{{ url_for('logout') }}">Logout</a>
+        -
+        <a href="{{ url_for('write') }}">Write entry</a>
+        {% endif %}
     </footer>
 </body>
 </html>

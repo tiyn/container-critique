@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <div class="archive">
-        <h1>Archive</h1><br>
+        <h1>User: {{ User }}</h1><br>
         {% autoescape off %}
         {{ content_string }}
         {% endautoescape %}

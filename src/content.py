@@ -33,6 +33,8 @@ def gen_arch_string():
     entries = db.get_entries()
     if entries is None:
         return ""
+    entries.sort(key=lambda y: y[1])
+    entries.reverse()
     entries.sort(key=lambda y: y[2])
     entries.reverse()
     for entry in entries:
@@ -40,6 +42,7 @@ def gen_arch_string():
         title = entry[1]
         year = entry[2]
         rating = entry[4]
+        username = db.get_user_by_id(entry[5])[1]
         if year != last_year:
             if last_year != "":
                 content_string += "</ul>\n"
@@ -47,18 +50,55 @@ def gen_arch_string():
             content_string += "<ul>\n"
             last_year = year
         content_string += "<li>"
-        content_string += "[<a href=\"" + \
-            url_for("index", _anchor=str(ident)) + "\">link</a> - <a href=\"" \
-            + url_for("entry", ident=str(ident)) + "\">standalone</a>] "
-        content_string += title + " " + rating_to_star(rating)
-        content_string += "<br></li>\n"
+        content_string += title + "<a href=\"" + \
+            url_for("entry", ident=str(ident)) + "\"> " + \
+            rating_to_star(rating) + " by " + username
+        content_string += "</a><br></li>\n"
+
+    return content_string
+
+
+def gen_user_string(name):
+    """
+    Creates and returns a archive string of every file in ENTRY_DIR.
+
+    Returns:
+    string: html-formatted archive-string.
+    """
+    content_string = ""
+    last_year = ""
+    entries = db.get_entries_by_name(name)
+    if entries is None:
+        return ""
+    entries.sort(key=lambda y: y[1])
+    entries.reverse()
+    entries.sort(key=lambda y: y[2])
+    entries.reverse()
+    for entry in entries:
+        ident = entry[0]
+        title = entry[1]
+        year = entry[2]
+        rating = entry[4]
+        username = db.get_user_by_id(entry[5])[1]
+        if year != last_year:
+            if last_year != "":
+                content_string += "</ul>\n"
+            content_string += "<h2>" + year + "</h2>\n"
+            content_string += "<ul>\n"
+            last_year = year
+        content_string += "<li>"
+        content_string += title + "<a href=\"" + \
+            url_for("entry", ident=str(ident)) + "\"> " + \
+            rating_to_star(rating)
+        content_string += "</a><br></li>\n"
 
     return content_string
 
 
 def gen_index_string():
     """
-    Create and returns a string including every file in the database as an index.
+    Create and returns a string including every file in the database as an
+    index.
 
     Returns:
     string: html-formatted index string.
@@ -77,12 +117,12 @@ def gen_index_string():
         username = db.get_user_by_id(entry[5])[1]
         reviewed = entry[6]
         content_string += "<div class=\"entry\">\n"
-        content_string += "<h1 id=\"" + str(ident) + "\">" + title + \
-            " (" + year + ") " + rating_to_star(rating) + "</h1>\n"
-        content_string += "[<a href=\"" + url_for("entry", ident=str(ident)) + \
-            "\">" + "standalone" + "</a>]<br>\n"
-        content_string += "<small>rated " + str(rating) + " by " + username + \
-            " on " + str(reviewed) + "</small><br>"
+        content_string += "<h1 id=\"" + str(ident) + "\"><a href=\"" + \
+            url_for("entry", ident=str(ident)) + "\">" + title + \
+            " (" + year + ") " + rating_to_star(rating) + "</a></h1>\n"
+        content_string += "<small>rated " + str(rating) + \
+            "/100 by <a href=\"" + url_for("user", name=username) + "\">" \
+            + username + "</a> on " + str(reviewed) + "</small><br>"
         content_string += text
         content_string += "<br>"
         content_string += "</div>"
@@ -113,10 +153,11 @@ def gen_stand_string(ident):
             " (" + year + ") "
         content_string += rating_to_star(rating)
         content_string += "</h1>\n"
-        content_string += "[<a href=\"" + url_for("index", ident=str(ident)) + \
-            "\">" + "link" + "</a>]<br>\n"
-        content_string += "<small>rated " + str(rating) + " by " + \
-            username + " on " + str(reviewed) + "</small><br>\n"
+        content_string += "<small>rated " + str(rating) + \
+            "/100 by <a href=\"" + url_for("user", name=username) + "\">" + \
+            username + "</a> on <a href=\"" + \
+            url_for("index", _anchor=str(ident)) + "\">" + str(reviewed) + \
+            "</a></small><br>\n"
         content_string += text + "<br>\n"
     return content_string
 
@@ -143,7 +184,7 @@ def get_rss_string():
         reviewed = entry[6]
         content_string += "<item>\n"
         content_string += "<title>" + title + "(" + year + ") " + \
-            rating_to_star(rating) + "</title>\n"
+            rating_to_star(rating) + " by " + username + "</title>\n"
         content_string += "<guid>" + \
             url_for("index", _anchor=str(ident), _external=True) + \
             "</guid>\n"

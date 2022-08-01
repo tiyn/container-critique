@@ -45,8 +45,17 @@ def index():
 @app.route("/archive")
 @app.route("/archive.html")
 def archive():
+    entries = db.get_entries()
     content = con_gen.gen_arch_string()
     return render_template("archive.html", content_string=content)
+
+
+@app.route("/user/<name>")
+def user(name):
+    content = con_gen.gen_user_string(name)
+    if content != "":
+        return render_template("user.html", name=name, content_string=content)
+    abort(404)
 
 
 @app.route("/entry/<ident>")
@@ -103,12 +112,10 @@ def logout():
 @app.route("/register", methods=["GET", "POST"])
 @app.route("/register.html", methods=["GET", "POST"])
 def register():
-    if current_user.is_authenticated or not REGISTER:
+    if current_user.is_authenticated or not config.ALLOW_REGISTRATION:
         return redirect(url_for("index"))
     form = RegisterForm()
     if form.validate_on_submit():
-        if not config.ALLOW_REGISTRATION:
-            return redirect(url_for("index"))
         db_user = db.get_user_by_name(form.username.data)
         if db_user is None:
             user = User(form.username.data)

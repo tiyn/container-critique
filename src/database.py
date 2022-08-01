@@ -97,6 +97,15 @@ class Database:
         crs.execute(query)
         return crs.fetchall()
 
+    def get_entries_by_name(self, name):
+        db = self.connect()
+        crs = db.cursor()
+        query = "SELECT * FROM " + self.ENTRY_TABLE_FILE + \
+                " WHERE user_id = (SELECT id FROM " + self.USER_TABLE_FILE + \
+                " WHERE name = ?)"
+        crs.execute(query, (name, ))
+        return crs.fetchall()
+
     def check_user_name(self, name):
         if self.get_user_by_name(name) is None:
             return True
