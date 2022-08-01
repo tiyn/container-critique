@@ -43,7 +43,6 @@ def index():
 
 @app.route("/archive")
 def archive():
-    entries = db.get_entries()
     content = con_gen.gen_arch_string()
     return render_template("archive.html", content_string=content)
 
@@ -73,9 +72,9 @@ def feed():
 
 @login.user_loader
 def load_user(ident):
-    db_user = db.get_user_by_id(ident)
-    if db_user is not None:
-        return db.db_to_user(*db_user)
+    user = db.get_user_by_id(ident)
+    if user is not None:
+        return user
     return None
 
 
@@ -85,9 +84,9 @@ def login():
         return redirect(url_for("index"))
     form = LoginForm()
     if form.validate_on_submit():
-        db_user = db.get_user_by_name(form.username.data)
-        if db_user is not None:
-            user = db.db_to_user(*db_user)
+        user = db.get_user_by_name(form.username.data)
+        print(user)
+        if user is not None:
             if user.check_password(form.password.data):
                 login_user(user)
                 return redirect(url_for("index"))
@@ -108,8 +107,8 @@ def register():
         return redirect(url_for("index"))
     form = RegisterForm()
     if form.validate_on_submit():
-        db_user = db.get_user_by_name(form.username.data)
-        if db_user is None:
+        user = db.get_user_by_name(form.username.data)
+        if user is None:
             user = User(form.username.data)
             user.set_password(form.password.data)
             ident = db.insert_user(user)

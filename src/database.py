@@ -8,20 +8,20 @@ class User():
 
     def __init__(self, name, pass_hash=None):
         self.name = name
-        self.id = 0
+        self.id = None
         self.is_active = True
         self.is_authenticated = True
         self.is_anonymous = False
         self.pass_hash = pass_hash
 
     def set_password(self, password):
-        self.pass_hash = generate_password_hash(password)
+        self.pass_hash = password
 
     def set_id(self, ident):
         self.id = ident
 
     def check_password(self, password):
-        return check_password_hash(self.pass_hash, password)
+        return self.pass_hash == password
 
     def get_id(self):
         return self.id
@@ -32,6 +32,7 @@ class Database:
     def __init__(self):
         self.USER_TABLE_FILE = 'USERS'
         self.ENTRY_TABLE_FILE = 'ENTRIES'
+        self.ITEM_TABLE_FILE = 'ITEMS'
         self.DB_DIR = os.path.dirname("./data/")
         self.setup_db()
 
@@ -52,20 +53,23 @@ class Database:
             "name CHAR(32) NOT NULL UNIQUE," + \
             "password CHAR(32) NOT NULL)"
         crs.execute(query)
+        query = "CREATE TABLE IF NOT EXISTS " + self.ITEM_TABLE_FILE + \
+            "(id INTEGER PRIMARY KEY AUTOINCREMENT," + \
+            "name CHAR(32) NOT NULL UNIQUE)"
+        crs.execute(query)
         query = "CREATE TABLE IF NOT EXISTS " + self.ENTRY_TABLE_FILE + \
             "(id INTEGER PRIMARY KEY AUTOINCREMENT," + \
-            "name CHAR(64) NOT NULL," + \
+            "item_id INTEGER NOT NULL REFERENCES " + self.ITEM_TABLE_FILE + "(id)," + \
             "date CHAR(4) NOT NULL," + \
             "text TEXT NOT NULL," + \
             "rating INTEGER NOT NULL," +\
-            "user_id INTEGER," +\
-            "reviewed CHAR(10) NOT NULL," +\
-            "FOREIGN KEY(user_id) REFERENCES " + self.USER_TABLE_FILE + "(id))"
+            "user_id INTEGER REFERENCES " + self.USER_TABLE_FILE + "(id),"\
+            "reviewed CHAR(10) NOT NULL)"
         crs.execute(query)
         db.commit()
 
     def insert_user(self, user):
-        if self.check_user_name(user.name) and user.pass_hash is not None:
+        if self.get_user_by_name(user.name) is None and user.pass_hash is not None:
             db = self.connect()
             crs = db.cursor()
             query = "INSERT INTO " + self.USER_TABLE_FILE + \
@@ -79,18 +83,20 @@ class Database:
     def insert_entry(self, name, date, text, rating, user_id=None):
         db = self.connect()
         crs = db.cursor()
+        query = "INSERT OR IGNORE INTO " + self.ITEM_TABLE_FILE + \
+            "(`name`)" + "VALUES (?)"
+        crs.execute(query, (name, ))
+        query = "SELECT id FROM " + self.ITEM_TABLE_FILE + \
+            " WHERE name = ?"
+        crs.execute(query, (name, ))
+        item_id = crs.fetchone()[0]
         reviewed = dt.today().strftime('%Y-%m-%d')
         query = "INSERT INTO " + self.ENTRY_TABLE_FILE + \
-            "(`name`,`date`, `text`, `rating`, `user_id`, `reviewed`)" + \
+            "(`item_id`,`date`, `text`, `rating`, `user_id`, `reviewed`)" + \
             "VALUES (?, ?, ?, ?, ?, ?)"
-        crs.execute(query, (name, date, text, rating, user_id, reviewed))
+        crs.execute(query, (item_id, date, text, rating, user_id, reviewed))
         db.commit()
         return crs.lastrowid
-
-    def check_user_name(self, name):
-        if self.get_user_by_name(name) is None:
-            return True
-        return False
 
     def delete_entry(self, ident):
         db = self.connect()
@@ -107,6 +113,13 @@ class Database:
         crs.execute(query)
         return crs.fetchall()
 
+    def get_entry_by_id(self, ident):
+        db = self.connect()
+        crs = db.cursor()
+        query = "SELECT * FROM " + self.ENTRY_TABLE_FILE + " WHERE id = ?"
+        crs.execute(query, (ident, ))
+        return crs.fetchone()
+
     def get_entries_by_name(self, name):
         db = self.connect()
         crs = db.cursor()
@@ -116,10 +129,10 @@ class Database:
         crs.execute(query, (name, ))
         return crs.fetchall()
 
-    def get_entry_by_id(self, ident):
+    def get_item_by_id(self, ident):
         db = self.connect()
         crs = db.cursor()
-        query = "SELECT * FROM " + self.ENTRY_TABLE_FILE + " WHERE id = ?"
+        query = "SELECT * FROM " + self.ITEM_TABLE_FILE + " WHERE id = ?"
         crs.execute(query, (ident, ))
         return crs.fetchone()
 
@@ -128,14 +141,22 @@ class Database:
         crs = db.cursor()
         query = "SELECT * FROM " + self.USER_TABLE_FILE + " WHERE id = ?"
         crs.execute(query, (ident, ))
-        return crs.fetchone()
+        fetched = crs.fetchone()
+        if fetched is None:
+            return None
+        else:
+            return self.db_to_user(*fetched)
 
     def get_user_by_name(self, name):
         db = self.connect()
         crs = db.cursor()
         query = "SELECT * FROM " + self.USER_TABLE_FILE + " WHERE name = ?"
         crs.execute(query, (name, ))
-        return crs.fetchone()
+        fetched = crs.fetchone()
+        if fetched is None:
+            return None
+        else:
+            return self.db_to_user(*fetched)
 
     def db_to_user(self, ident, name, pass_hash):
         user = User(name, pass_hash)

@@ -39,10 +39,10 @@ def gen_arch_string():
     entries.reverse()
     for entry in entries:
         ident = entry[0]
-        title = entry[1]
+        title = db.get_item_by_id(entry[1])[1]
         year = entry[2]
         rating = entry[4]
-        username = db.get_user_by_id(entry[5])[1]
+        username = db.get_user_by_id(entry[5]).name
         if year != last_year:
             if last_year != "":
                 content_string += "</ul>\n"
@@ -76,10 +76,10 @@ def gen_user_string(name):
     entries.reverse()
     for entry in entries:
         ident = entry[0]
-        title = entry[1]
+        title = db.get_item_by_id(entry[1])[1]
         year = entry[2]
         rating = entry[4]
-        username = db.get_user_by_id(entry[5])[1]
+        username = db.get_user_by_id(entry[5]).name
         if year != last_year:
             if last_year != "":
                 content_string += "</ul>\n"
@@ -110,11 +110,11 @@ def gen_index_string():
     entries.reverse()
     for entry in entries:
         ident = entry[0]
-        title = entry[1]
+        title = db.get_item_by_id(entry[1])[1]
         year = entry[2]
         text = entry[3]
         rating = entry[4]
-        username = db.get_user_by_id(entry[5])[1]
+        username = db.get_user_by_id(entry[5]).name
         reviewed = entry[6]
         content_string += "<div class=\"entry\">\n"
         content_string += "<h1 id=\"" + str(ident) + "\"><a href=\"" + \
@@ -143,11 +143,11 @@ def gen_stand_string(ident):
     content_string = ""
     if entry is not None:
         ident = entry[0]
-        title = entry[1]
+        title = db.get_item_by_id(entry[1])[1]
         year = entry[2]
         text = entry[3]
         rating = entry[4]
-        username = db.get_user_by_id(entry[5])[1]
+        username = db.get_user_by_id(entry[5]).name
         reviewed = entry[6]
         content_string += "<h1>" + title + \
             " (" + year + ") "
@@ -179,11 +179,11 @@ def get_rss_string():
     entries.reverse()
     for entry in entries:
         ident = entry[0]
-        title = entry[1]
+        title = db.get_item_by_id(entry[1])[1]
         year = entry[2]
         text = entry[3]
         rating = entry[4]
-        username = db.get_user_by_id(entry[5])[1]
+        username = db.get_user_by_id(entry[5]).name
         reviewed = entry[6]
         content_string += "<item>\n"
         content_string += "<title>" + title + "(" + year + ") " + \
