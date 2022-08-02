@@ -26,7 +26,7 @@ login.login_view = "login"
 @app.context_processor
 def inject_title():
     return dict(title=config.TITLE, style=config.STYLE,
-                description=config.DESCRIPTION)
+                description=config.DESCRIPTION, registration=config.ALLOW_REGISTRATION)
 
 
 @app.errorhandler(404)

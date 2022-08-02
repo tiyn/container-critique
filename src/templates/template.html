@@ -33,8 +33,10 @@
         Made with <a href="https://github.com/tiyn/container-critique">Container Critique </a>.<br>
         {% if current_user.is_anonymous %}
         <a href="{{ url_for('login') }}">Login</a>
+        {% if registration %}
         -
         <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
         {% else %}
         <a href="{{ url_for('logout') }}">Logout</a>
         -
