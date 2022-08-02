@@ -4,6 +4,23 @@
 <div class="container">
     <div class="archive">
         <h1>User: {{ User }}</h1><br>
+        {% set ns = namespace(last_year="") %}
+        {% for entry in entries %}
+        {% if entry.item.date != ns.last_year %}
+        {% if ns.last_year != "" %}
+        </ul>
+        {% endif %}
+        <h2> {{ entry.item.date }} </h2>
+        <ul>
+        {% endif %}
+        {% set ns.last_year = entry.item.date %}
+            <li>
+                {{ entry.item.name }}
+                <a href="{{ url_for('entry', ident=entry.id) }}">
+                    {{ r_to_star(entry.rating) }} by username
+                </a>
+            </li><br>
+        {% endfor %}
         {% autoescape off %}
         {{ content_string }}
         {% endautoescape %}

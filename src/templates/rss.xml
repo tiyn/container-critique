@@ -4,13 +4,26 @@
 <channel>
     <title>{{ title }}</title>
     <description>{{ description }}</description>
-<language>en-us</language>
-<link>{{ url_for("feed", _external=True) }}</link>
-<atom:link href="{{ url_for('feed', _external=True) }}" rel="self" type="application/rss+xml" />
-
-{% autoescape off %}
-{{ content_string }}
-{% endautoescape %}
-
+    <language>en-us</language>
+    <link>{{ url_for("feed", _external=True) }}</link>
+    <atom:link href="{{ url_for('feed', _external=True) }}" rel="self" type="application/rss+xml" />
+    {% for entry in entries %}
+    <item>
+        <title>
+            {{ entry.item.name }} ({{ entry.item.date }}) {{ r_to_star(entry.rating) }} by {{ entry.user.name }}
+        </title>
+        <guid>
+            {{ url_for("index", _anchor=entry.id, _external=True) }}
+        </guid>
+        <pubDate>
+            {{ entry.reviewed }}
+        </pubDate>
+        <description>
+            {% autoescape off %}
+            text
+            {% endautoescape %}
+        </description>
+    </item>
+    {% endfor %}
 </channel>
 </rss>

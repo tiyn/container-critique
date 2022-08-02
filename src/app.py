@@ -6,7 +6,7 @@ from flask_wtf import CSRFProtect
 import os
 
 import config
-import content as con_gen
+from content import rating_to_star
 from database import Database
 from forms import LoginForm, RegisterForm, WriteForm
 
@@ -26,7 +26,8 @@ login.login_view = "login"
 @app.context_processor
 def inject_title():
     return dict(title=config.TITLE, style=config.STYLE,
-                description=config.DESCRIPTION, registration=config.ALLOW_REGISTRATION)
+                description=config.DESCRIPTION, \
+                registration=config.ALLOW_REGISTRATION, r_to_star=rating_to_star)
 
 
 @app.errorhandler(404)
@@ -36,36 +37,46 @@ def page_not_found(e):
 
 @app.route("/")
 def index():
-    content = con_gen.gen_index_string()
-    return render_template("index.html", content_string=content)
+    entries = db.get_entries()
+    entries.reverse()
+    return render_template("index.html", entries=entries)
 
 
 @app.route("/archive")
 def archive():
-    content = con_gen.gen_arch_string()
-    return render_template("archive.html", content_string=content)
+    entries = db.get_entries()
+    entries.sort(key=lambda y: y.item.name)
+    entries.reverse()
+    entries.sort(key=lambda y: y.item.date)
+    entries.reverse()
+    return render_template("archive.html", entries=entries)
 
 
 @app.route("/user/<name>")
 def user(name):
-    content = con_gen.gen_user_string(name)
-    if content != "":
-        return render_template("user.html", name=name, content_string=content)
+    entries = db.get_entries_by_user(name)
+    entries.sort(key=lambda y: y.item.name)
+    entries.reverse()
+    entries.sort(key=lambda y: y.item.date)
+    entries.reverse()
+    if entries != []:
+        return render_template("user.html", name=name, entries=entries)
     abort(404)
 
 
 @app.route("/entry/<ident>")
 def entry(ident):
-    content = con_gen.gen_stand_string(ident)
-    if content != "":
-        return render_template("standalone.html", content_string=content)
+    entry = db.get_entry_by_id(ident)
+    if entry is not None:
+        return render_template("standalone.html", entry=entry)
     abort(404)
 
 
 @app.route("/feed")
 def feed():
-    content = con_gen.get_rss_string()
-    rss_xml = render_template("rss.xml", content_string=content)
+    entries = db.get_entries()
+    entries.reverse()
+    rss_xml = render_template("rss.xml", entries=entries)
     return rss_xml
 
 

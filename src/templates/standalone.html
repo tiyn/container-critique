@@ -3,9 +3,32 @@
 {% block content %}
 <div class="container">
     <div class="standalone">
+        <h1>
+            {{ entry.item.name }} ({{ entry.item.date }})
+            {{ r_to_star(entry.rating) }}
+        </h1>
+        <small>
+            rated {{ entry.rating }}/100 by
+            <a href="{{ url_for('user', name=entry.user.name) }}">
+                {{ entry.user.name }}
+            </a>
+            on
+            <a href="{{ url_for('index', _anchor=entry.id) }}">
+                {{ entry.reviewed }}
+            </a>
+        </small><br>
+        {% if current_user.id == entry.user.id %}
+        <small>
+            [
+            <a href="{{ url_for('delete_entry', ident=entry.id) }}">
+                delete entry
+            </a>
+            ]
+        </small><br>
+        {% endif %}
         {% autoescape off %}
-        {{ content_string }}
-        {% endautoescape %}
+        {{ entry.text }}
+        {% endautoescape %}<br>
     </div>
 </div>
 {% endblock %}

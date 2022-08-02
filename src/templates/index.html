@@ -4,9 +4,24 @@
 <div class="container">
     <div class="blog">
         <h1>Index</h1><br>
-        {% autoescape off %}
-        {{ content_string }}
-        {% endautoescape %}
+        {% for entry in entries %}
+        <div class="entry">
+            <h1 id="{{ entry.id }}">
+                <a href="{{ url_for('entry', ident=entry.id) }}">
+                    {{ entry.item.name }} ({{ entry.item.date }}) {{ r_to_star(entry.rating) }}
+                </a>
+            </h1>
+            <small>
+                rated {{ entry.rating }}/100 by
+                <a href="{{ url_for('user', name=entry.user.name) }}">
+                    {{ entry.user.name }}
+                </a>
+            </small><br>
+            {% autoescape off %}
+            {{ entry.text }}
+            {% endautoescape %}
+        </div><br>
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
