@@ -1,7 +1,6 @@
-{% extends "template.html" %}
+{% extends "template.html" -%}
 
-{% block content %}
-
+{% block content -%}
 <div class="container">
     <div class="writing">
         <h1>Write Critique</h1>
@@ -10,39 +9,39 @@
             <p>
                 {{ form.name.label }}<br>
                 {{ form.name(size=64) }}
-                {% for error in form.name.errors %}
+                {% for error in form.name.errors -%}
                 <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
+                {% endfor -%}
             </p>
             <p>
                 {{ form.date.label }}<br>
                 {{ form.date }}
-                {% for error in form.date.errors %}
+                {% for error in form.date.errors -%}
                 <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
+                {% endfor -%}
             </p>
             <p>
 
                 {{ form.text.label }}<br>
                 {{ form.text }}
-                {% for error in form.text.errors %}
+                {% for error in form.text.errors -%}
                 <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
+                {% endfor -%}
                 {{ ckeditor.load() }}
                 {{ ckeditor.config(name="text") }}
             </p>
             <p>
                 {{ form.rating.label }}<br>
                 {{ form.rating }}
-                {% for error in form.rating.errors %}
+                {% for error in form.rating.errors -%}
                 <span style="color: red;">[{{ error }}]</span>
-                {% endfor %}
+                {% endfor -%}
             </p>
             <p>{{ form.submit() }}</p>
-            {% for mesg in get_flashed_messages() %}
+            {% for mesg in get_flashed_messages() -%}
             <p>{{ mesg }}</p>
-            {% endfor %}
+            {% endfor -%}
         </form>
     </div>
 </div>
-{% endblock %}
+{% endblock -%}

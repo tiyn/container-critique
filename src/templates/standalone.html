@@ -1,6 +1,6 @@
-{% extends "template.html" %}
+{% extends "template.html" -%}
 
-{% block content %}
+{% block content -%}
 <div class="container">
     <div class="standalone">
         <h1>
@@ -17,7 +17,7 @@
                 {{ entry.reviewed }}
             </a>
         </small><br>
-        {% if current_user.id == entry.user.id %}
+        {% if current_user.id == entry.user.id -%}
         <small>
             [
             <a href="{{ url_for('delete_entry', ident=entry.id) }}">
@@ -25,10 +25,10 @@
             </a>
             ]
         </small><br>
-        {% endif %}
-        {% autoescape off %}
+        {% endif -%}
+        {% autoescape off -%}
         {{ entry.text }}
-        {% endautoescape %}<br>
+        {% endautoescape -%}<br>
     </div>
 </div>
-{% endblock %}
+{% endblock -%}

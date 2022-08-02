@@ -1,10 +1,10 @@
-{% extends "template.html" %}
+{% extends "template.html" -%}
 
-{% block content %}
+{% block content -%}
 <div class="container">
     <div class="blog">
         <h1>Blog</h1><br>
-        {% for entry in entries %}
+        {% for entry in entries -%}
         <div class="entry">
             <h1 id="{{ entry.id }}">
                 <a href="{{ url_for('entry', ident=entry.id) }}">
@@ -17,11 +17,11 @@
                     {{ entry.user.name }}
                 </a>
             </small><br>
-            {% autoescape off %}
+            {% autoescape off -%}
             {{ entry.text }}
-            {% endautoescape %}
+            {% endautoescape -%}
         </div><br>
-        {% endfor %}
+        {% endfor -%}
     </div>
 </div>
-{% endblock %}
+{% endblock -%}

@@ -1,26 +1,46 @@
-{% extends "template.html" %}
+{% extends "template.html" -%}
 
-{% block content %}
-<div class="container">
-    <div class="archive">
-        <h1>Archive</h1><br>
-        {% set ns = namespace(last_year="") %}
-        {% for entry in entries %}
-        {% if entry.item.date != ns.last_year %}
-        {% if ns.last_year != "" %}
-        </ul>
-        {% endif %}
-        <h2> {{ entry.item.date }} </h2>
-        <ul>
-        {% endif %}
-        {% set ns.last_year = entry.item.date %}
-            <li>
-                {{ entry.item.name }}
+{% block content -%}
+    <div class="container">
+        <div class="archive">
+            <h1>Archive</h1><br>
+            {% set ns = namespace(last_year="", last_name="", open_li = False, open_ul = False) -%}
+            {% for entry in entries -%}
+            {% if ns.last_name != entry.item.name and ns.last_name != "" -%}
+                </li>
+            {% set ns.open_li = False -%}
+            {% endif -%}
+            {% if entry.item.date != ns.last_year -%}
+            {% if ns.last_year != "" -%}
+            </ul>
+            {% set ns.open_ul = False -%}
+            {% endif -%}
+            <h2> {{ entry.item.date }} </h2>
+            <ul>
+            {% set ns.open_ul = True -%}
+            {% endif -%}
+            {% if ns.last_name == entry.item.name and ns.last_year == entry.item.date -%}
+                <br>
                 <a href="{{ url_for('entry', ident=entry.id) }}">
                     {{ r_to_star(entry.rating) }} by {{ entry.user.name }}
                 </a>
-            </li><br>
-        {% endfor %}
+            {% else -%}
+                <li>
+                    {{ entry.item.name }}<br>
+                    <a href="{{ url_for('entry', ident=entry.id) }}">
+                        {{ r_to_star(entry.rating) }} by {{ entry.user.name }}
+                    </a>
+            {% set ns.open_li = True -%}
+            {% endif -%}
+            {% set ns.last_year = entry.item.date -%}
+            {% set ns.last_name = entry.item.name -%}
+            {% endfor -%}
+            {% if ns.open_li -%}
+                </li>
+            {% endif -%}
+            {% if ns.open_ul -%}
+            </ul>
+            {% endif -%}
+        </div>
     </div>
-</div>
-{% endblock %}
+{% endblock -%}

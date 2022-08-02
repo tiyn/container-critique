@@ -1,7 +1,6 @@
-{% extends "template.html" %}
+{% extends "template.html" -%}
 
-{% block content %}
-
+{% block content -%}
 <div class="container">
     <div class="logging">
         <h1>Sign In</h1>
@@ -16,10 +15,10 @@
                 {{ form.password(size=32) }}
             </p>
             <p>{{ form.submit() }}</p>
-            {% for mesg in get_flashed_messages() %}
+            {% for mesg in get_flashed_messages() -%}
             <p>{{ mesg }}</p>
-            {% endfor %}
+            {% endfor -%}
         </form>
     </div>
 </div>
-{% endblock %}
+{% endblock -%}

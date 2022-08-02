@@ -7,7 +7,7 @@
     <language>en-us</language>
     <link>{{ url_for("feed", _external=True) }}</link>
     <atom:link href="{{ url_for('feed', _external=True) }}" rel="self" type="application/rss+xml" />
-    {% for entry in entries %}
+    {% for entry in entries -%}
     <item>
         <title>
             {{ entry.item.name }} ({{ entry.item.date }}) {{ r_to_star(entry.rating) }} by {{ entry.user.name }}
@@ -19,11 +19,11 @@
             {{ entry.reviewed }}
         </pubDate>
         <description>
-            {% autoescape off %}
+            {% autoescape off -%}
             text
-            {% endautoescape %}
+            {% endautoescape -%}
         </description>
     </item>
-    {% endfor %}
+    {% endfor -%}
 </channel>
 </rss>

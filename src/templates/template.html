@@ -3,12 +3,13 @@
     (url_for("archive"), 'archive', 'Archive')
 ] -%}
 
+<!DOCTYPE html>
 <html>
 <head>
     <title>{{ title }}</title>
-    <link href="{{ url_for('static', filename='css/' + style + '.css') }}" rel="stylesheet" type="text/css">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width" initial-scale=1.0>
+    <link href="{{ url_for('static', filename='css/' + style + '.css') }}" rel="stylesheet" type="text/css">
 </head>
 <body>
     <!-- Menu -->
@@ -18,30 +19,26 @@
         <input type="checkbox" id="main-menu-check">
         <label for="main-menu-check" class="show-menu">&#9776;</label>
         <div class="main-menu">
-            {% for href, id, caption in navigation_bar %}
+            {% for href, id, caption in navigation_bar -%}
             <a href="{{ href|e }}">{{ caption|e }}</a>
-            {% endfor %}
+            {% endfor -%}
             <label for="main-menu-check" class="hide-menu">X</label>
         </div>
     </div>
-    <!-- Menu -->
-    <!-- Content -->
-	{% block content %}
-	{% endblock %}
-    <!-- Content -->
+    {% block content -%}
+    {% endblock -%}
     <footer>
         Made with <a href="https://github.com/tiyn/container-critique">Container Critique </a>.<br>
-        {% if current_user.is_anonymous %}
+        {% if current_user.is_anonymous -%}
         <a href="{{ url_for('login') }}">Login</a>
-        {% if registration %}
+        {% if registration -%}
         -
         <a href="{{ url_for('register') }}">Register</a>
-        {% endif %}
-        {% else %}
-        <a href="{{ url_for('logout') }}">Logout</a>
-        -
+        {% endif -%}
+        {% else -%}
+        <a href="{{ url_for('logout') }}">Logout</a> -
         <a href="{{ url_for('write_entry') }}">Write entry</a>
-        {% endif %}
+        {% endif -%}
     </footer>
 </body>
 </html>
