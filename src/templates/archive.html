@@ -17,7 +17,7 @@
             <li>
                 {{ entry.item.name }}
                 <a href="{{ url_for('entry', ident=entry.id) }}">
-                    {{ r_to_star(entry.rating) }} by username
+                    {{ r_to_star(entry.rating) }} by {{ entry.user.name }}
                 </a>
             </li><br>
         {% endfor %}

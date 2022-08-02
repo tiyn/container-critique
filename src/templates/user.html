@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container">
     <div class="archive">
-        <h1>User: {{ User }}</h1><br>
+        <h1>User: {{ name }}</h1><br>
         {% set ns = namespace(last_year="") %}
         {% for entry in entries %}
         {% if entry.item.date != ns.last_year %}
@@ -17,7 +17,7 @@
             <li>
                 {{ entry.item.name }}
                 <a href="{{ url_for('entry', ident=entry.id) }}">
-                    {{ r_to_star(entry.rating) }} by username
+                    {{ r_to_star(entry.rating) }} by {{ entry.user.name }}
                 </a>
             </li><br>
         {% endfor %}
