@@ -136,7 +136,7 @@ def write_entry():
 def delete_entry(ident):
     if not current_user.is_authenticated:
         return redirect(url_for("index"))
-    if current_user.id == db.get_entry_by_id(ident).user_id:
+    if current_user.id == db.get_entry_by_id(ident).user.id:
         db.delete_entry(ident)
     return redirect(url_for("index"))
 

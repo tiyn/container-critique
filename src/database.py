@@ -29,8 +29,9 @@ class User():
 
 class Item():
 
-    def __init__(self, name):
+    def __init__(self, name, date):
         self.name = name
+        self.date = date
         self.id = None
 
     def set_id(self, ident):
@@ -39,16 +40,21 @@ class Item():
 
 class Entry():
 
-    def __init__(self, item_id, date, text, rating, user_id, reviewed):
-        self.item_id = item_id
-        self.date = date
+    def __init__(self, text, rating, reviewed):
         self.text = text
         self.rating = rating
-        self.user_id = user_id
         self.reviewed = reviewed
+        self.item = None
+        self.user = None
 
     def set_id(self, ident):
         self.id = ident
+
+    def set_item(self, item):
+        self.item = item
+
+    def set_user(self, user):
+        self.user = user
 
 
 class Database:
@@ -79,12 +85,12 @@ class Database:
         crs.execute(query)
         query = "CREATE TABLE IF NOT EXISTS " + self.ITEM_TABLE_FILE + \
             "(id INTEGER PRIMARY KEY AUTOINCREMENT," + \
+            "date CHAR(4)," + \
             "name CHAR(32) NOT NULL UNIQUE)"
         crs.execute(query)
         query = "CREATE TABLE IF NOT EXISTS " + self.ENTRY_TABLE_FILE + \
             "(id INTEGER PRIMARY KEY AUTOINCREMENT," + \
             "item_id INTEGER NOT NULL REFERENCES " + self.ITEM_TABLE_FILE + "(id)," + \
-            "date CHAR(4) NOT NULL," + \
             "text TEXT NOT NULL," + \
             "rating INTEGER NOT NULL," +\
             "user_id INTEGER REFERENCES " + self.USER_TABLE_FILE + "(id),"\
@@ -109,17 +115,17 @@ class Database:
         db = self.connect()
         crs = db.cursor()
         query = "INSERT OR IGNORE INTO " + self.ITEM_TABLE_FILE + \
-            "(`name`)" + "VALUES (?)"
-        crs.execute(query, (name, ))
+            "(`name`,`date`)" + "VALUES (?, ?)"
+        crs.execute(query, (name, date))
         query = "SELECT id FROM " + self.ITEM_TABLE_FILE + \
             " WHERE name = ?"
         crs.execute(query, (name, ))
         item_id = crs.fetchone()[0]
         reviewed = dt.today().strftime('%Y-%m-%d')
         query = "INSERT INTO " + self.ENTRY_TABLE_FILE + \
-            "(`item_id`,`date`, `text`, `rating`, `user_id`, `reviewed`)" + \
-            "VALUES (?, ?, ?, ?, ?, ?)"
-        crs.execute(query, (item_id, date, text, rating, user_id, reviewed))
+            "(`item_id`, `text`, `rating`, `user_id`, `reviewed`)" + \
+            "VALUES (?, ?, ?, ?, ?)"
+        crs.execute(query, (item_id, text, rating, user_id, reviewed))
         db.commit()
         return crs.lastrowid
 
@@ -202,12 +208,14 @@ class Database:
         user.set_id(ident)
         return user
 
-    def db_to_item(self, ident, name):
-        item = Item(name)
+    def db_to_item(self, ident, name, date):
+        item = Item(date, name)
         item.set_id(ident)
         return item
 
-    def db_to_entry(self, ident, item_id, date, text, rating, user_id, reviewed):
-        entry = Entry(item_id, date, text, rating, user_id, reviewed)
+    def db_to_entry(self, ident, item_id, text, rating, user_id, reviewed):
+        entry = Entry(text, rating, reviewed)
         entry.set_id(ident)
+        entry.set_item(self.get_item_by_id(item_id))
+        entry.set_user(self.get_user_by_id(user_id))
         return entry
