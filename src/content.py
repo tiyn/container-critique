@@ -14,6 +14,9 @@ def rating_to_star(rating):
     string: unicode-formatted star-rating string.
     """
     res = u"\u272D"*int(rating/20)
+    length = len(res)
     if rating/20 % 1 >= 0.5:
-        res += u"\u00BD"
+        length += 1
+        res += u" \u2BE8 "
+    res += (u"\u2606" * (5 - length))
     return res

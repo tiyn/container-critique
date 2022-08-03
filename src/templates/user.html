@@ -4,26 +4,40 @@
 <div class="container">
     <div class="archive">
         <h1>User: {{ name }}</h1><br>
-        {% set ns = namespace(last_year="") -%}
-        {% for entry in entries -%}
-        {% if entry.item.date != ns.last_year -%}
-        {% if ns.last_year != "" -%}
-        </ul>
-        {% endif -%}
-        <h2> {{ entry.item.date }} </h2>
-        <ul>
-        {% endif -%}
-        {% set ns.last_year = entry.item.date -%}
-            <li>
-                {{ entry.item.name }}
-                <a href="{{ url_for('entry', ident=entry.id) }}">
-                    {{ r_to_star(entry.rating) }} by {{ entry.user.name }}
-                </a>
-            </li><br>
-        {% endfor -%}
-        {% autoescape off -%}
-        {{ content_string }}
-        {% endautoescape -%}
+            {% set ns = namespace(prev_item_date="", prev_item_id=None, open_li = False, open_ul = False) -%}
+            {% for entry in entries -%}
+            {% if ns.prev_item_id != entry.item.id and ns.prev_item_id != None -%}
+                </li>
+            {% set ns.open_li = False -%}
+            {% endif -%}
+            {% if entry.item.date != ns.prev_item_date -%}
+            {% if ns.prev_item_date != "" -%}
+            </ul>
+            {% set ns.open_ul = False -%}
+            {% endif -%}
+            <h2> {{ entry.item.date }} </h2>
+            <ul>
+            {% set ns.open_ul = True -%}
+            {% endif -%}
+            {% if ns.prev_item_id == entry.item.id -%}
+                    <br>
+            {% else -%}
+                <li>
+                    {{ entry.item.name }}<br>
+            {% set ns.open_li = True -%}
+            {% endif -%}
+                    <a href="{{ url_for('entry', ident=entry.id) }}">
+                        {{ entry.reviewed }} {{ r_to_star(entry.rating) }}
+                    </a>
+            {% set ns.prev_item_date = entry.item.date -%}
+            {% set ns.prev_item_id = entry.item.id -%}
+            {% endfor -%}
+            {% if ns.open_li -%}
+                </li>
+            {% endif -%}
+            {% if ns.open_ul -%}
+            </ul>
+            {% endif -%}
     </div>
 </div>
 {% endblock -%}

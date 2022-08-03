@@ -1,24 +1,24 @@
 {% extends "template.html" -%}
 
 {% block content -%}
-<div class="container">
-    <div class="logging">
-        <h1>Sign In</h1>
-        <form action="" method="post" novalidate>
-            {{ form.hidden_tag() }}
-            <p>
-                {{ form.username.label }}<br>
-                {{ form.username(size=32) }}
-            </p>
-            <p>
-                {{ form.password.label }}<br>
-                {{ form.password(size=32) }}
-            </p>
-            <p>{{ form.submit() }}</p>
-            {% for mesg in get_flashed_messages() -%}
-            <p>{{ mesg }}</p>
-            {% endfor -%}
-        </form>
+    <div class="container">
+        <div class="logging">
+            <h1>Sign In</h1>
+            <form action="" method="post" novalidate>
+                {{ form.hidden_tag() }}
+                <p>
+                    {{ form.username.label }}<br>
+                    {{ form.username(size=32) }}
+                </p>
+                <p>
+                    {{ form.password.label }}<br>
+                    {{ form.password(size=32) }}
+                </p>
+                <p>{{ form.submit() }}</p>
+                {% for mesg in get_flashed_messages() -%}
+                <p>{{ mesg }}</p>
+                {% endfor -%}
+            </form>
+        </div>
     </div>
-</div>
 {% endblock -%}

@@ -85,8 +85,9 @@ class Database:
         crs.execute(query)
         query = "CREATE TABLE IF NOT EXISTS " + self.ITEM_TABLE_FILE + \
             "(id INTEGER PRIMARY KEY AUTOINCREMENT," + \
+            "name CHAR(32) NOT NULL," + \
             "date CHAR(4)," + \
-            "name CHAR(32) NOT NULL UNIQUE)"
+            "UNIQUE(date, name))"
         crs.execute(query)
         query = "CREATE TABLE IF NOT EXISTS " + self.ENTRY_TABLE_FILE + \
             "(id INTEGER PRIMARY KEY AUTOINCREMENT," + \
@@ -118,8 +119,8 @@ class Database:
             "(`name`,`date`)" + "VALUES (?, ?)"
         crs.execute(query, (name, date))
         query = "SELECT id FROM " + self.ITEM_TABLE_FILE + \
-            " WHERE name = ?"
-        crs.execute(query, (name, ))
+            " WHERE name = ? AND date = ?"
+        crs.execute(query, (name, date))
         item_id = crs.fetchone()[0]
         reviewed = dt.today().strftime('%Y-%m-%d')
         query = "INSERT INTO " + self.ENTRY_TABLE_FILE + \
@@ -209,7 +210,7 @@ class Database:
         return user
 
     def db_to_item(self, ident, name, date):
-        item = Item(date, name)
+        item = Item(name, date)
         item.set_id(ident)
         return item
 

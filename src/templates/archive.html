@@ -4,14 +4,14 @@
     <div class="container">
         <div class="archive">
             <h1>Archive</h1><br>
-            {% set ns = namespace(last_year="", last_name="", open_li = False, open_ul = False) -%}
+            {% set ns = namespace(prev_item_date="", prev_item_id=None, open_li = False, open_ul = False) -%}
             {% for entry in entries -%}
-            {% if ns.last_name != entry.item.name and ns.last_name != "" -%}
+            {% if ns.prev_item_id != entry.item.id and ns.prev_item_id != None -%}
                 </li>
             {% set ns.open_li = False -%}
             {% endif -%}
-            {% if entry.item.date != ns.last_year -%}
-            {% if ns.last_year != "" -%}
+            {% if entry.item.date != ns.prev_item_date -%}
+            {% if ns.prev_item_date != "" -%}
             </ul>
             {% set ns.open_ul = False -%}
             {% endif -%}
@@ -19,21 +19,18 @@
             <ul>
             {% set ns.open_ul = True -%}
             {% endif -%}
-            {% if ns.last_name == entry.item.name and ns.last_year == entry.item.date -%}
+            {% if ns.prev_item_id == entry.item.id -%}
                 <br>
-                <a href="{{ url_for('entry', ident=entry.id) }}">
-                    {{ r_to_star(entry.rating) }} by {{ entry.user.name }}
-                </a>
             {% else -%}
                 <li>
                     {{ entry.item.name }}<br>
-                    <a href="{{ url_for('entry', ident=entry.id) }}">
-                        {{ r_to_star(entry.rating) }} by {{ entry.user.name }}
-                    </a>
             {% set ns.open_li = True -%}
             {% endif -%}
-            {% set ns.last_year = entry.item.date -%}
-            {% set ns.last_name = entry.item.name -%}
+                <a href="{{ url_for('entry', ident=entry.id) }}">
+                    {{ entry.reviewed }} {{ r_to_star(entry.rating) }} by {{ entry.user.name }}
+                </a>
+            {% set ns.prev_item_date = entry.item.date -%}
+            {% set ns.prev_item_id = entry.item.id -%}
             {% endfor -%}
             {% if ns.open_li -%}
                 </li>

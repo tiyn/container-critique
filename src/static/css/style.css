@@ -3,6 +3,20 @@
     --transtime: 0.7s;
 }
 
+
+
+@font-face{
+    font-family: "LocalMono";
+    src: url("/static/fonts/jetbrainsmono-medium.woff2") format("woff2");
+}
+
+@font-face {
+    font-family: "LocalSans";
+    font-style: normal;
+    font-weight: 400;
+    src: url("/static/fonts/linux_libertine.woff2") format("woff2");
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -38,7 +52,7 @@ body {
 
 body,
 html {
-    font-family: sans-serif;
+    font-family: LocalSans, sans-serif;
     height: 100%;
     max-width: 100%;
     overflow-x: hidden;
@@ -83,7 +97,7 @@ span {
 
 .main-menu-dropdown span {
     float: left;
-    font-family: monospace;
+    font-family: LocalMono, monospace;
     font-size: 30px;
     font-weight: bold;
     line-height: 100px;
@@ -152,7 +166,7 @@ span {
 
 .main-menu {
     float: right;
-    font-family: monospace;
+    font-family: LocalMono, monospace;
     font-size: 30px;
     font-weight: bold;
     line-height: 100px;
