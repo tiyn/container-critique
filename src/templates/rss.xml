@@ -16,7 +16,7 @@
             {{ url_for("index", _anchor=entry.id, _external=True) }}
         </guid>
         <pubDate>
-            {{ entry.reviewed }}
+            {{ entry.date }}
         </pubDate>
         <description>
             {% autoescape off -%}

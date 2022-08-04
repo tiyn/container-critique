@@ -1,0 +1,23 @@
+{% extends "template.html" -%}
+
+{% block content %}
+<div class="container">
+    <h1>Search</h1><br>
+    <div class="search">
+        <form action="{{ url_for('search') }}" method=post>
+            {{ form.hidden_tag() }}
+            {{ form.query_str }}
+            {{ form.submit }}
+        </form>
+            <ul>
+        {% for entry in results -%}
+                <li>
+                    <a href="{{ url_for('entry', ident=entry.id) }}">
+                        {{ entry.date }} {{ r_to_star(entry.rating) }} {{ entry.item.name }} ({{ entry.item.date }}) by {{ entry.user.name }}
+                    </a>
+                </li>
+        {% endfor -%}
+            </ul>
+    </div>
+</div>
+{% endblock -%}

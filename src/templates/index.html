@@ -15,7 +15,7 @@
                     rated {{ entry.rating }}/100 by
                     <a href="{{ url_for('user', name=entry.user.name) }}">
                         {{ entry.user.name }}
-                    </a> on {{ entry.reviewed }}
+                    </a> on {{ entry.date }}
                 </small><br>
                 {% autoescape off -%}
                 {{ entry.text }}

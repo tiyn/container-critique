@@ -27,7 +27,7 @@
             {% set ns.open_li = True -%}
             {% endif -%}
                     <a href="{{ url_for('entry', ident=entry.id) }}">
-                        {{ entry.reviewed }} {{ r_to_star(entry.rating) }}
+                        {{ entry.date }} {{ r_to_star(entry.rating) }}
                     </a>
             {% set ns.prev_item_date = entry.item.date -%}
             {% set ns.prev_item_id = entry.item.id -%}

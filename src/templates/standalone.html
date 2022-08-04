@@ -14,7 +14,7 @@
                 </a>
                 on
                 <a href="{{ url_for('index', _anchor=entry.id) }}">
-                    {{ entry.reviewed }}
+                    {{ entry.date }}
                 </a>
             </small><br>
             {% if current_user.id == entry.user.id -%}

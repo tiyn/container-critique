@@ -1,13 +1,16 @@
 from datetime import date
 from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, TextField
 from wtforms.fields.html5 import IntegerField
 from wtforms.validators import DataRequired, EqualTo, InputRequired, \
     NumberRange, ValidationError, Length
 
 
 class LoginForm(FlaskForm):
+    """
+    A Class for the Form that is used while logging in.
+    """
     username = StringField("Username", validators=[DataRequired(),
                                                    Length(min=4, max=32)])
     password = PasswordField("Password", validators=[DataRequired(),
@@ -16,6 +19,9 @@ class LoginForm(FlaskForm):
 
 
 class RegisterForm(FlaskForm):
+    """
+    A Class for the Form that is used while registering.
+    """
     username = StringField("Username", validators=[DataRequired(),
                                                    Length(min=4, max=32)])
     password = PasswordField("Password", validators=[DataRequired(),
@@ -25,7 +31,19 @@ class RegisterForm(FlaskForm):
     submit = SubmitField("Register")
 
 
+class SearchForm(FlaskForm):
+    """
+    A Class for the Form that is used while searching.
+    """
+    query_str = TextField(
+        "Query", [DataRequired("Please enter the search term")])
+    submit = SubmitField("Search")
+
+
 class WriteForm(FlaskForm):
+    """
+    A Class for the Form that is used while writing a new entry.
+    """
     name = StringField("Name", validators=[DataRequired(),
                                            Length(min=2, max=64)])
     date = IntegerField("Release Year", default=date.today().year, validators=[
@@ -37,5 +55,17 @@ class WriteForm(FlaskForm):
     submit = SubmitField("Publish")
 
     def validate_text(self, text):
+        """
+        Validate a given input for html level one headers.
+
+        Parameters:
+        text (str): text to validate
+
+        Returns:
+        None
+
+        Raises:
+        ValidatenError: if the text contains a first level html tag
+        """
         if "<h1>" in text.data or "</h1>" in text.data:
             raise ValidationError("Headings on level 1 are not permitted.")

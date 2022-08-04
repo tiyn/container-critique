@@ -1,14 +1,17 @@
-from flask import Flask, flash, render_template, redirect, abort, url_for
+from flask import Flask, flash, render_template, redirect, abort, url_for, \
+    request
 from flask_ckeditor import CKEditor
 from flask_login import current_user, login_user, LoginManager, logout_user, \
     login_required
 from flask_wtf import CSRFProtect
 import os
+from werkzeug.exceptions import HTTPException
 
 import config
 from content import rating_to_star
 from database import Database
-from forms import LoginForm, RegisterForm, WriteForm
+from forms import LoginForm, RegisterForm, WriteForm, SearchForm
+from search import create_search_index, ft_search
 
 
 app = Flask(__name__)
@@ -23,20 +26,55 @@ login = LoginManager(app)
 login.login_view = "login"
 
 
+@login.user_loader
+def load_user(ident):
+    """
+    Returns a user by id.
+
+    Parameters:
+    ident(int): id of the user
+
+    Returns:
+    User: user that matches the id, None if none matches the id
+    """
+    user = db.get_user_by_id(ident)
+    if user is not None:
+        return user
+    return None
+
+
 @app.context_processor
 def inject_title():
-    return dict(title=config.TITLE, style=config.STYLE, \
-                description=config.DESCRIPTION, \
+    """
+    Injects variables to the jinja2 templates.
+
+    Returns:
+    dict: dictionary of variables to inject.
+    """
+    return dict(title=config.TITLE, style=config.STYLE,
+                description=config.DESCRIPTION,
                 registration=config.ALLOW_REGISTRATION, r_to_star=rating_to_star)
 
 
-@app.errorhandler(404)
+@app.errorhandler(HTTPException)
 def page_not_found(e):
-    return render_template("error.html", errorcode="404"), 404
+    """
+    Renders the error pages.
+
+    Returns:
+    str: html formatted Error page
+    """
+    return render_template("error.html", errorcode=str(e.code) + " " + e.name), e.code
 
 
 @app.route("/")
 def index():
+    """
+    Renders the index page.
+
+    Returns:
+    str: html formatted index page
+    """
     entries = db.get_entries()
     entries.reverse()
     return render_template("index.html", entries=entries)
@@ -44,6 +82,12 @@ def index():
 
 @app.route("/archive")
 def archive():
+    """
+    Renders the archive page.
+
+    Returns:
+    str: html formatted archive page
+    """
     entries = db.get_entries()
     entries.sort(key=lambda y: y.item.name)
     entries.reverse()
@@ -54,7 +98,16 @@ def archive():
 
 @app.route("/user/<name>")
 def user(name):
-    entries = db.get_entries_by_user(name)
+    """
+    Renders the user page of a specific user.
+
+    Parameters:
+    name(str): name of the user
+
+    Returns:
+    str: html formatted user page
+    """
+    entries = db.get_entries_by_username(name)
     entries.sort(key=lambda y: y.item.name)
     entries.reverse()
     entries.sort(key=lambda y: y.item.date)
@@ -66,6 +119,15 @@ def user(name):
 
 @app.route("/entry/<ident>")
 def entry(ident):
+    """
+    Renders the entry page of a specific entry.
+
+    Parameters:
+    ident(str): ident of the entry
+
+    Returns:
+    str: html formatted entry page
+    """
     entry = db.get_entry_by_id(ident)
     if entry is not None:
         return render_template("standalone.html", entry=entry)
@@ -74,22 +136,43 @@ def entry(ident):
 
 @app.route("/feed")
 def feed():
+    """
+    Renders the rss feed of a the feed.
+
+    Returns:
+    str: xml formatted feed
+    """
     entries = db.get_entries()
     entries.reverse()
     rss_xml = render_template("rss.xml", entries=entries)
     return rss_xml
 
 
-@login.user_loader
-def load_user(ident):
-    user = db.get_user_by_id(ident)
-    if user is not None:
-        return user
-    return None
+@app.route("/search", methods=["GET", "POST"])
+def search():
+    """
+    Renders the search page.
+
+    Returns:
+    str: html formatted search page.
+    """
+    form = SearchForm()
+    if request.method == "POST":
+        query_str = request.form["query_str"]
+        query_res = ft_search(query_str)
+        return render_template("search.html", form=form, results=query_res), 200
+    return render_template("search.html", form=form, content=""), 200
 
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    """
+    Logs the user in.
+
+    Returns:
+    str: html formatted login page, if login is successful renders the index
+        page.
+    """
     if current_user.is_authenticated:
         return redirect(url_for("index"))
     form = LoginForm()
@@ -107,12 +190,25 @@ def login():
 
 @app.route('/logout')
 def logout():
+    """
+    Logs out the current user.
+
+    Returns:
+    str: html formatted index page.
+    """
     logout_user()
     return redirect(url_for("index"))
 
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    """
+    Registers new users.
+
+    Returns:
+    str: html formatted registration page, if registration is successful
+        renders the index page.
+    """
     if current_user.is_authenticated or not config.ALLOW_REGISTRATION:
         return redirect(url_for("index"))
     form = RegisterForm()
@@ -132,12 +228,20 @@ def register():
 @app.route("/write_entry", methods=["GET", "POST"])
 @login_required
 def write_entry():
+    """
+    Stores newly written entries.
+
+    Returns:
+    str: html formatted write entry page, if posting of the entry is successful
+        renders the index page.
+    """
     if not current_user.is_authenticated:
         return redirect(url_for("index"))
     form = WriteForm()
     if form.validate_on_submit():
         db.insert_entry(form.name.data, form.date.data,
                         form.text.data, form.rating.data, current_user.id)
+        create_search_index()
         return redirect(url_for("index"))
     return render_template("write.html", form=form)
 
@@ -145,10 +249,17 @@ def write_entry():
 @app.route("/delete_entry/<ident>", methods=["GET", "POST"])
 @login_required
 def delete_entry(ident):
+    """
+    Deletes an existing entry.
+
+    Returns:
+    str: html formatted index entry page.
+    """
     if not current_user.is_authenticated:
         return redirect(url_for("index"))
     if current_user.id == db.get_entry_by_id(ident).user.id:
         db.delete_entry(ident)
+        create_search_index()
     return redirect(url_for("index"))
 
 

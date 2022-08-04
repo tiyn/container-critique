@@ -12,3 +12,9 @@ STYLE = "dark"
 
 # Allow new registrations
 ALLOW_REGISTRATION = True
+
+# Location of the search-indexing directory
+INDEX_DIR = "indexdir"
+
+# Number of search results to show
+SEARCH_NUMBER = 10
