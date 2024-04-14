@@ -10,12 +10,16 @@
     <title>{{ title }}</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width" initial-scale=1.0>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='graphics/logo.png') }}">
     <link href="{{ url_for('static', filename='css/' + style + '.css') }}" rel="stylesheet" type="text/css">
 </head>
 <body>
     <div class="main-menu-dropdown">
         <!-- <img class="logo" src="/static/images/logo.png"> -->
-        <span>{{ title }}</span>
+        <a href="{{ url_for('index') }}">
+          <img class="logo" src="{{ url_for('static', filename='graphics/logo.png') }}">
+          <span>{{ title }}</span>
+        </a>
         <input type="checkbox" id="main-menu-check">
         <label for="main-menu-check" class="show-menu">&#9776;</label>
         <div class="main-menu">

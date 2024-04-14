@@ -13,14 +13,14 @@
                     {{ entry.user.name }}
                 </a>
                 on
-                <a href="{{ url_for('index', _anchor=entry.id) }}">
+                <a href="{{ url_for('index', _anchor='{0:d}'.format(entry.id)) }}">
                     {{ entry.date }}
                 </a>
             </small><br>
             {% if current_user.id == entry.user.id -%}
             <small>
                 [
-                <a href="{{ url_for('delete_entry', ident=entry.id) }}">
+                <a href="{{ url_for('delete_entry', ident='{0:d}'.format(entry.id)) }}">
                     delete entry
                 </a>
                 ]

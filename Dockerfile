@@ -6,11 +6,11 @@ COPY src /blog
 
 WORKDIR /blog
 
-VOLUME /blog/data
-
 RUN pip3 install -r requirements.txt
 
-VOLUME /blog/templates/entry
+VOLUME /blog/data
+
+VOLUME /blog/static/graphics
 
 EXPOSE 5000
 

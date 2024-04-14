@@ -2,14 +2,71 @@
 
 :root {
     --bg0: rgb(255,255,255);
-    --bg1: rgb(192,192,192);
     --color0: rgb(0,0,120);
+    --error: rgb(255,0,0);
     --footerbg0: rgb(192,192,192);
     --link0: rgb(0,0,120);
-    --link1: rgb(255,255,255);
+    --link1: rgb(0,0,0);
     --menulink0: rgb(0,0,120);
     --menulink1: rgb(255,255,255);
     --menubg0: rgb(192,192,192);
     --text0: rgb(0,0,0);
     --text1: rgb(0,0,120);
+}
+
+a {
+    color: var(--link0);
+    transition: var(--transtime);
+}
+
+a:hover {
+    color: var(--link1);
+}
+
+body {
+    background: var(--bg0);
+}
+
+footer {
+    background: var(--footerbg0);
+    color: var(--text0);
+}
+
+span {
+    color: var(--text1);
+}
+
+.container {
+    color: var(--text0);
+}
+
+.container h1,
+.container h2 {
+    color: var(--text1);
+}
+
+.container .flash {
+    background-color: var(--error);
+}
+
+.hide-menu:hover,
+.main-menu a:hover,
+.show-menu:hover {
+    color: var(--menulink1);
+}
+
+.main-menu a {
+    color: var(--menulink0);
+}
+
+.main-menu-dropdown {
+    background: var(--menubg0);
+    color: var(--menulink0);
+}
+
+@media screen and (max-width:800px) {
+
+    .main-menu {
+        background: var(--menubg0);
+    }
 }

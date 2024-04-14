@@ -1,8 +1,8 @@
 from datetime import date
 from flask_ckeditor import CKEditorField
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, TextField
-from wtforms.fields.html5 import IntegerField
+from wtforms import StringField, PasswordField, SubmitField, StringField
+from wtforms.fields import IntegerField
 from wtforms.validators import DataRequired, EqualTo, InputRequired, \
     NumberRange, ValidationError, Length
 
@@ -35,7 +35,7 @@ class SearchForm(FlaskForm):
     """
     A Class for the Form that is used while searching.
     """
-    query_str = TextField(
+    query_str = StringField(
         "Query", [DataRequired("Please enter the search term")])
     submit = SubmitField("Search")
 
