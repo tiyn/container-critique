@@ -17,6 +17,7 @@ The blog is intended to be used to review and critique things.
   - [x] Writing entries
   - [ ] Editing entries
   - [x] Deleting entries
+  - [ ] Better interface for writing, editing, deleting, login
 - [x] Infinite-scroll blog page
 - [x] Archive page
   - [x] Months as headings
@@ -25,7 +26,7 @@ The blog is intended to be used to review and critique things.
 - [x] Standalone article page
   - [x] Links to scrolling blog page
 - [x] Search page
-  - Full-text search
+  - [x] Full-text search
 - [x] RSS feed
 - [x] Eye candy
   - [x] Star rating
