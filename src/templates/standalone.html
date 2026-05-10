@@ -1,34 +1,39 @@
 {% extends "template.html" -%}
 
 {% block content -%}
-    <div class="container">
-        <div class="standalone">
-            <h1>
-                {{ entry.item.name }} ({{ entry.item.date }})
-                {{ r_to_star(entry.rating) }}
-            </h1>
-            <small>
-                rated {{ entry.rating }}/100 by
-                <a href="{{ url_for('user', name=entry.user.name) }}">
-                    {{ entry.user.name }}
-                </a>
-                on
-                <a href="{{ url_for('index', _anchor='{0:d}'.format(entry.id)) }}">
-                    {{ entry.date }}
-                </a>
-            </small><br>
-            {% if current_user.id == entry.user.id -%}
-            <small>
-                [
-                <a href="{{ url_for('delete_entry', ident='{0:d}'.format(entry.id)) }}">
-                    delete entry
-                </a>
-                ]
-            </small><br>
-            {% endif -%}
-            {% autoescape off -%}
-            {{ entry.text }}
-            {% endautoescape -%}<br>
-        </div>
-    </div>
+<div class="container">
+  <div class="standalone">
+    <h1>
+      {{ entry.item.name }} ({{ entry.item.date }})
+      {{ r_to_star(entry.rating) }}
+    </h1>
+    <small>
+      rated {{ entry.rating }}/100 by
+      <a href="{{ url_for('user', name=entry.user.name) }}">
+        {{ entry.user.name }}
+      </a>
+      on
+      <a href="{{ url_for('index', _anchor='{0:d}'.format(entry.id)) }}">
+        {{ entry.date }}
+      </a>
+    </small><br>
+    {% if current_user.id == entry.user.id -%}
+    <a class="link-like" href="{{ url_for('edit_entry', ident='{0:d}'.format(entry.id)) }}">
+      edit entry
+    </a>
+    -
+    <form method="post" action="{{ url_for('delete_entry', ident='{0:d}'.format(entry.id)) }}" style="display:inline;"
+      onsubmit="return confirm('Delete entry?');">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <button type="submit" class="link-like">
+        delete entry
+      </button>
+    </form>
+    {% endif -%}
+    {% autoescape off -%}
+    {{ entry.text }}
+    {% endautoescape -%}<br>
+  </div>
+</div>
 {% endblock -%}

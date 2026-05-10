@@ -8,13 +8,24 @@
     padding: 0;
 }
 
-a {
+a,
+.link-like {
     text-decoration: none;
     transition: var(--transtime);
 }
 
-a:hover {
+a:hover,
+.link-like:hover {
     cursor: pointer;
+}
+
+.link-like {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    color: inherit;
+    font: inherit;
 }
 
 body {

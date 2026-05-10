@@ -14,12 +14,14 @@
     --text1: rgb(220, 120, 0);
 }
 
-a {
+a,
+.link-like {
     color: var(--link0);
     transition: var(--transtime);
 }
 
-a:hover {
+a:hover,
+.link-like:hover  {
     color: var(--link1);
 }
 

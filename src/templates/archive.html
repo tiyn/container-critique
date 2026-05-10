@@ -1,43 +1,43 @@
 {% extends "template.html" -%}
 
 {% block content -%}
-    <div class="container">
-        <div class="archive">
-            <h1>Archive</h1><br>
-            {% set ns = namespace(prev_item_date="", prev_item_id=None, open_li = False, open_ul = False) -%}
-            {% for entry in entries -%}
-            {% if ns.prev_item_id != entry.item.id and ns.prev_item_id != None -%}
-                </li>
-            {% set ns.open_li = False -%}
-            {% endif -%}
-            {% if entry.item.date != ns.prev_item_date -%}
-            {% if ns.prev_item_date != "" -%}
-            </ul>
-            {% set ns.open_ul = False -%}
-            {% endif -%}
-            <h2> {{ entry.item.date }} </h2>
-            <ul>
-            {% set ns.open_ul = True -%}
-            {% endif -%}
-            {% if ns.prev_item_id == entry.item.id -%}
-                <br>
-            {% else -%}
-                <li>
-                    {{ entry.item.name }}<br>
-            {% set ns.open_li = True -%}
-            {% endif -%}
-                <a href="{{ url_for('entry', ident=entry.id) }}">
-                    {{ entry.date }} {{ r_to_star(entry.rating) }} by {{ entry.user.name }}
-                </a>
-            {% set ns.prev_item_date = entry.item.date -%}
-            {% set ns.prev_item_id = entry.item.id -%}
-            {% endfor -%}
-            {% if ns.open_li -%}
-                </li>
-            {% endif -%}
-            {% if ns.open_ul -%}
-            </ul>
-            {% endif -%}
-        </div>
-    </div>
+<div class="container">
+  <div class="archive">
+    <h1>Archive</h1><br>
+    {% set ns = namespace(prev_item_date="", prev_item_id=None, open_li = False, open_ul = False) -%}
+    {% for entry in entries -%}
+    {% if ns.prev_item_id != entry.item.id and ns.prev_item_id != None -%}
+    </li>
+    {% set ns.open_li = False -%}
+    {% endif -%}
+    {% if entry.item.date != ns.prev_item_date -%}
+    {% if ns.prev_item_date != "" -%}
+    </ul>
+    {% set ns.open_ul = False -%}
+    {% endif -%}
+    <h2> {{ entry.item.date }} </h2>
+    <ul>
+      {% set ns.open_ul = True -%}
+      {% endif -%}
+      {% if ns.prev_item_id == entry.item.id -%}
+      <br>
+      {% else -%}
+      <li>
+        {{ entry.item.name }}<br>
+        {% set ns.open_li = True -%}
+        {% endif -%}
+        <a href="{{ url_for('entry', ident=entry.id) }}">
+          {{ entry.date }} {{ r_to_star(entry.rating) }} by {{ entry.user.name }}
+        </a>
+        {% set ns.prev_item_date = entry.item.date -%}
+        {% set ns.prev_item_id = entry.item.id -%}
+        {% endfor -%}
+        {% if ns.open_li -%}
+      </li>
+      {% endif -%}
+      {% if ns.open_ul -%}
+    </ul>
+    {% endif -%}
+  </div>
+</div>
 {% endblock -%}

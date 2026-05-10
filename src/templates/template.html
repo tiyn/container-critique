@@ -1,48 +1,51 @@
 {% set navigation_bar = [
-    (url_for("index"), "index", "Blog"),
-    (url_for("archive"), "archive", "Archive"),
-    (url_for("search"), "search", "Search")
+(url_for("index"), "index", "Blog"),
+(url_for("archive"), "archive", "Archive"),
+(url_for("search"), "search", "Search")
 ] -%}
 
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>{{ title }}</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width" initial-scale=1.0>
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='graphics/logo.png') }}">
-    <link href="{{ url_for('static', filename='css/' + style + '.css') }}" rel="stylesheet" type="text/css">
+  <title>{{ title }}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width" initial-scale=1.0>
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='graphics/logo.png') }}">
+  <link href="{{ url_for('static', filename='css/' + style + '.css') }}" rel="stylesheet" type="text/css">
 </head>
+
 <body>
-    <div class="main-menu-dropdown">
-        <!-- <img class="logo" src="/static/images/logo.png"> -->
-        <a href="{{ url_for('index') }}">
-          <img class="logo" src="{{ url_for('static', filename='graphics/logo.png') }}">
-          <span>{{ title }}</span>
-        </a>
-        <input type="checkbox" id="main-menu-check">
-        <label for="main-menu-check" class="show-menu">&#9776;</label>
-        <div class="main-menu">
-            {% for href, id, caption in navigation_bar -%}
-            <a href="{{ href|e }}">{{ caption|e }}</a>
-            {% endfor -%}
-            <label for="main-menu-check" class="hide-menu">X</label>
-        </div>
+  <div class="main-menu-dropdown">
+    <!-- <img class="logo" src="/static/images/logo.png"> -->
+    <a href="{{ url_for('index') }}">
+      <img class="logo" src="{{ url_for('static', filename='graphics/logo.png') }}">
+      <span>{{ title }}</span>
+    </a>
+    <input type="checkbox" id="main-menu-check">
+    <label for="main-menu-check" class="show-menu">&#9776;</label>
+    <div class="main-menu">
+      {% for href, id, caption in navigation_bar -%}
+      <a href="{{ href|e }}">{{ caption|e }}</a>
+      {% endfor -%}
+      <label for="main-menu-check" class="hide-menu">X</label>
     </div>
-    {% block content -%}
-    {% endblock -%}
-    <footer>
-        Made with <a href="https://github.com/tiyn/container-critique">Container Critique </a>.<br>
-        {% if current_user.is_anonymous -%}
-        <a href="{{ url_for('login') }}">Login</a>
-        {% if registration -%}
-        -
-        <a href="{{ url_for('register') }}">Register</a>
-        {% endif -%}
-        {% else -%}
-        <a href="{{ url_for('logout') }}">Logout</a> -
-        <a href="{{ url_for('write_entry') }}">Write entry</a>
-        {% endif -%}
-    </footer>
+  </div>
+  {% block content -%}
+  {% endblock -%}
+  <footer>
+    Made with <a href="https://github.com/tiyn/container-critique">Container Critique </a>.<br>
+    {% if current_user.is_anonymous -%}
+    <a href="{{ url_for('login') }}">Login</a>
+    {% if registration -%}
+    -
+    <a href="{{ url_for('register') }}">Register</a>
+    {% endif -%}
+    {% else -%}
+    <a href="{{ url_for('logout') }}">Logout</a> -
+    <a href="{{ url_for('write_entry') }}">Write entry</a>
+    {% endif -%}
+  </footer>
 </body>
+
 </html>
