@@ -1,6 +1,7 @@
 # Container Critique
 
-![container-critique-logo](container-critique.png)
+<!-- ![container-critique-logo](container-critique.png) -->
+<img src="container-critique.png" width="300">
 
 Container Critique is a blog based on Pythons Flask framework.
 The blog is intended to be used to review and critique movies, books and similar media.
